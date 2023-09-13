@@ -40,4 +40,9 @@ This allows us to achieve the following benefits:
 4. **Collaboration**
    - Developers can work on different parts of the application simultaneously and independently.
 
-
+### Structure:
+- `src/api`: API resources
+- `src/app`: Expo File-folder Routing  
+- `src/assets`: Images, fonts, and other static resources 
+- `src/screens`: Individual application screens 
+- `src/component`: Reusable UI components

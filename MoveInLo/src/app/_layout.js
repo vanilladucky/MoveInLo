@@ -1,13 +1,17 @@
 import { Stack } from "expo-router";
+import Footer from "@src/components/navbar/footer";
 
 export default function AppLayout() {
   return (
     <Stack
       screenOptions={{
         headerStyle: {
-          backgroundColor: "#FFFFFF",
+          backgroundColor: "#181C62",
         },
+        headerTintColor: "#fff",
       }}
-    ></Stack>
+    >
+      <Footer />
+    </Stack>
   );
 }
