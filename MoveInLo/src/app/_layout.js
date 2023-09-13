@@ -1,17 +1,41 @@
 import { Stack } from "expo-router";
-import Footer from "@src/components/navbar/footer";
+import ThemeProvider from "@src/assets/theme/ThemeProvider";
+import * as SplashScreen from "expo-splash-screen";
+import { useFonts } from "expo-font";
+import { useCallback } from "react";
 
-export default function AppLayout() {
+export default function RootLayout() {
+  const [fontsLoaded, fontError] = useFonts({
+    RobotoBold: require("@src/assets/fonts/Roboto-Black.ttf"),
+  });
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded || fontError) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
+
+  if (!fontsLoaded && !fontError) {
+    return null;
+  }
+
   return (
-    <Stack
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: "#181C62",
-        },
-        headerTintColor: "#fff",
-      }}
-    >
-      <Footer />
-    </Stack>
+    <ThemeProvider>
+      <Stack
+        screenOptions={{
+          title: "MoveInLo",
+          headerStyle: {
+            backgroundColor: "#181C62",
+          },
+          headerTintColor: "#FFF",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      >
+        <Stack.Screen name="auth/login" />
+        <Stack.Screen name="home" />
+      </Stack>
+    </ThemeProvider>
   );
 }

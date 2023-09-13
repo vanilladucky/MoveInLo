@@ -11,7 +11,7 @@
     "name": "MoveInLo",
     "slug": "MoveInLo",
     "splash": {
-      "image": "./src/assets/logo/LandingScreen.png",
+      "image": "./src/assets/splash/LandingScreen.png",
       "resizeMode": "contain",
       "backgroundColor": "#181C62"
     }

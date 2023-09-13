@@ -1,4 +1,5 @@
 import { View, Text } from "react-native";
+import { Tabs } from "expo-router";
 
 const Footer = () => {
   return (

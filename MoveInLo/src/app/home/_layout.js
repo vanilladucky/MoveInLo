@@ -1,13 +1,4 @@
-import { Slot } from "expo-router";
-import Footer from "@src/components/navbar/footer";
-import Header from "@src/components/navbar/header";
-
-export default function HomeLayout() {
-  return (
-    <>
-      <Header />
-      <Slot />
-      <Footer />
-    </>
-  );
-}
+import { Slot, Tabs } from "expo-router";
+export default () => {
+  return <Tabs>{/*<Tabs.Screen name="Scheduling Options" />*/}</Tabs>;
+};
