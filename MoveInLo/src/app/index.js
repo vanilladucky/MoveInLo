@@ -1,8 +1,10 @@
-import { View, StyleSheet } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import React from "react";
 import BaseButton from "@src/components/utils/button";
 import ThemeProvider, { useTheme } from "@src/assets/theme/ThemeProvider";
+import { View, StyleSheet, Text } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Screen } from "react-native-screens";
+import HomePage from "@src/app/home/_layout";
 
 const App = () => {
   const { theme } = useTheme();
