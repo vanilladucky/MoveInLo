@@ -2,7 +2,7 @@ import { Stack } from "expo-router";
 import ThemeProvider from "@src/assets/theme/ThemeProvider";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -30,6 +30,7 @@ export default function RootLayout() {
           headerTintColor: "#FFF",
           headerTitleStyle: {
             fontWeight: "bold",
+            fontFamily: "RobotoBold",
           },
         }}
       >

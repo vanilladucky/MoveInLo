@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useTheme } from "@src/assets/theme/ThemeProvider";
+import React from "react";
 
 const BaseButton = (props) => {
   const { theme } = useTheme();
