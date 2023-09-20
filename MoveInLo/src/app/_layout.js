@@ -1,10 +1,10 @@
 import React, { useCallback } from "react";
 import { Stack } from "expo-router";
-import ThemeProvider from "@src/assets/theme/ThemeProvider";
 import { useFonts } from "expo-font";
+import ThemeProvider from "@src/assets/theme/ThemeProvider";
 import * as SplashScreen from "expo-splash-screen";
 
-export default function RootLayout() {
+const RootLayout = () => {
   const [fontsLoaded, fontError] = useFonts({
     RobotoBlack: require("@src/assets/fonts/RobotoBlack.ttf"),
     RobotoBold: require("@src/assets/fonts/RobotoBold.ttf"),
@@ -38,9 +38,10 @@ export default function RootLayout() {
         }}
         onLayout={onFontLayoutView}
       >
-        <Stack.Screen name="home" />
-        <Stack.Screen name="header" />
+        {/* <Stack.Screen name="(tabs)" /> */}
       </Stack>
     </ThemeProvider>
   );
-}
+};
+
+export default RootLayout;
