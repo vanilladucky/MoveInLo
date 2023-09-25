@@ -1,9 +1,11 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useTheme } from "@src/assets/theme/ThemeProvider";
-import React from "react";
+import { router } from "expo-router";
+import React, { useState } from "react";
 
 const BaseButton = (props) => {
   const { theme } = useTheme();
+  const [hover, setHover] = useState(false);
 
   const styles = StyleSheet.create({
     button: {
@@ -13,11 +15,18 @@ const BaseButton = (props) => {
       justifyContent: "center",
       alignItems: "center",
     },
+    "button:hover": {
+      transform: "scale(1.2)",
+    },
     buttonText: {
       fontSize: 16,
       fontWeight: "700",
     },
   });
+
+  const onPressHandler = () => {
+    router.push(props.link);
+  };
 
   return (
     <View
@@ -31,7 +40,7 @@ const BaseButton = (props) => {
         },
       ]}
     >
-      <Pressable>
+      <Pressable onPress={onPressHandler}>
         <Text
           style={[
             styles.buttonText,
