@@ -1,56 +1,39 @@
 import React from "react";
+import LandingIcon from "@src/assets/splash/LandingLogo.png";
 import BaseButton from "@src/components/utils/button";
-import ThemeProvider, { useTheme } from "@src/assets/theme/ThemeProvider";
-import { View, StyleSheet, Text, Image } from "react-native";
+import { View, Text, Image } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Screen } from "react-native-screens";
-import LandingIcon from "@src/assets/splash/LandingLogo.png";
 
 const App = () => {
-  const { theme } = useTheme();
-
-  const styles = StyleSheet.create({
-    background: {
-      backgroundColor: theme.background,
-    },
-    font: {
-      fontFamily: "RobotoBold",
-      fontSize: 20,
-      textAlign: "center",
-      padding: 15,
-    },
-    container: {
-      width: "100%",
-      height: "100%",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: 20,
-    },
-    buttons: {
-      display: "flex",
-      flexDirection: "row",
-      gap: 20,
-    },
-  });
-
   return (
-    <ThemeProvider>
-      <SafeAreaProvider>
-        <Screen style={[styles.background, styles.container, styles.font]}>
+    <SafeAreaProvider className={`bg-primary`}>
+      <Screen
+        className={`h-5/6 w-full flex flex-col items-center justify-center space-y-5`}
+      >
+        <View>
+          <Text
+            className={`font-RobotoBold text-white text-2xl text-center p-5`}
+          >
+            Welcome to
+          </Text>
+          <Image source={LandingIcon} />
+          <Text
+            className={`font-RobotoBold text-white text-2xl text-center p-5`}
+          >
+            MoveInLo!
+          </Text>
+        </View>
+        <View className={`flex flex-row space-x-4`}>
           <View>
-            <Text style={styles.font}>Welcome to</Text>
-            <Image source={LandingIcon} />
-            <Text style={styles.font}>MoveInLo!</Text>
-          </View>
-          <View style={styles.buttons}>
             <BaseButton title="Login" link="/auth/login" />
+          </View>
+          <View>
             <BaseButton title="Sign up" link="/auth/signup" />
           </View>
-        </Screen>
-      </SafeAreaProvider>
-    </ThemeProvider>
+        </View>
+      </Screen>
+    </SafeAreaProvider>
   );
 };
 
