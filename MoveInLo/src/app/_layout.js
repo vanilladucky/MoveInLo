@@ -35,11 +35,13 @@ const RootLayout = () => {
           headerTitleStyle: {
             fontFamily: "RobotoBold",
           },
+
+          // Re-enable if user wants to go back
+          headerBackTitleVisible: false,
+          headerBackVisible: false,
         }}
         onLayout={onFontLayoutView}
-      >
-        {/* <Stack.Screen name="(tabs)" /> */}
-      </Stack>
+      />
     </ThemeProvider>
   );
 };

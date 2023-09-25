@@ -1,11 +1,11 @@
 import { Text, View } from "react-native";
 
-const SignUpUI = () => {
+const SchedulingUI = () => {
   return (
     <View>
-      <Text>Signup Page</Text>
+      <Text>Schedule</Text>
     </View>
   );
 };
 
-export default SignUpUI;
+export default SchedulingUI;

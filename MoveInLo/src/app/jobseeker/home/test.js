@@ -1,7 +1,7 @@
 import { Text, View } from "react-native";
 import BaseButton from "@src/components/utils/button";
 
-const LoginUI = () => {
+const test = () => {
   return (
     <View>
       <Text className="">Login Page</Text>
@@ -10,4 +10,4 @@ const LoginUI = () => {
   );
 };
 
-export default LoginUI;
+export default test;

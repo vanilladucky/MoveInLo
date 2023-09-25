@@ -1,13 +1,13 @@
 import { Text, View } from "react-native";
 import BaseButton from "@src/components/utils/button";
 
-const LoginUI = () => {
+const CustomerHomeUI = () => {
   return (
     <View>
-      <Text className="">Login Page</Text>
-      <BaseButton title={"Login"} link={"home"} />
+      <Text>Home</Text>
+      <BaseButton title={"as"} link={"/home/test"} />
     </View>
   );
 };
 
-export default LoginUI;
+export default CustomerHomeUI;

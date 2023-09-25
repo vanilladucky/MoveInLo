@@ -1,11 +1,11 @@
 import { Text, View } from "react-native";
 
-const Login = () => {
+const SchedulingUI = () => {
   return (
     <View>
-      <Text>Home</Text>
+      <Text>Schedule</Text>
     </View>
   );
 };
 
-export default Login;
+export default SchedulingUI;
