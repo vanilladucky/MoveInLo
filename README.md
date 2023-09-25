@@ -4,7 +4,9 @@
 ## Our Project
 This project is for an mobile application for MoveInLo! 
 
-## Set-up Guide for New Users
+<hr>
+
+## Set-up Guide for New Developers
 
 Navigate to the project directory
 ```
@@ -18,15 +20,26 @@ npm install
 
 Starting Development Server
 ```
-npx expo start
+npx expo start --clear
 ```
 
-Starting Development Server (Mobile)
+Starting Development Server (To test on mobile)
+> Note: You will need to install expo on your mobile device to use this feature.
 ```
 npx expo start --tunnel
 ```
+Using an emulator (Download ios/ android emulator)
+> Note: You will need to have an ios or android emulator to use this feature. Verify that your simulator is functioning as expected.
+```
+npx expo start --ios
+npx expo start --android
+```
 
-### File Folder Structure
+View this link for guide on [Expo Setup](https://docs.expo.dev/workflow/ios-simulator/#expo-cli-is-printing-an-error-message-about-xcrun-what-do-i-do).
+
+<hr>
+
+## File Folder Structure
 We adopted the best practice for file folder structure, adhering to `Container-Component` pattern. 
 This allows us to achieve the following benefits: 
 1. **Separation of Concerns**
