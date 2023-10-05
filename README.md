@@ -23,7 +23,7 @@ Starting Development Server
 npx expo start --clear
 ```
 
-Starting Development Server (To test on mobile)
+Starting Development Server (To index on mobile)
 > Note: You will need to install expo on your mobile device to use this feature.
 ```
 npx expo start --tunnel
@@ -59,3 +59,10 @@ This allows us to achieve the following benefits:
 - `src/assets`: Images, fonts, and other static resources 
 - `src/screens`: Individual application screens 
 - `src/component`: Reusable UI components
+
+## Developer Guide
+For frontend routing convention, we will adhere by the following standards for readability 
+and adherence to the Expo best practices.
+- Create a `_layout.js` and `index.js` for each page.
+- Nested routes can be accessed using the following convention, with each nested route being a directory.
+  - `customer/schedule/scheduler`
