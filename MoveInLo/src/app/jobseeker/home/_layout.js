@@ -1,7 +1,7 @@
-import { Stack } from "expo-router";
+import Header from "@src/components/navbar/header";
 
 const CustomerHomeLayout = () => {
-  return <Stack screenOptions={{ headerShown: false }}></Stack>;
+  return <Header></Header>;
 };
 
 export default CustomerHomeLayout;

@@ -5,7 +5,7 @@ const CustomerHomeUI = () => {
   return (
     <View>
       <Text>Home</Text>
-      <BaseButton title={"as"} link={"/home/test"} />
+      <BaseButton title={"Sign out"} link={"auth/login"} />
     </View>
   );
 };

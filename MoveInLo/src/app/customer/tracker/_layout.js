@@ -1,7 +1,7 @@
-import { Stack } from "expo-router";
+import Header from "@src/components/navbar/header";
 
 const StackLayout = () => {
-  return <Stack />;
+  return <Header />;
 };
 
 export default StackLayout;

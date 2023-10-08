@@ -1,10 +1,16 @@
-import { View, Text } from "react-native";
+import { Stack } from "expo-router";
 
-const Header = () => {
+const Header = ({ children }) => {
   return (
-    <View>
-      <Text>HEADER</Text>
-    </View>
+    <Stack
+      screenOptions={{
+        headerShown: true,
+        headerTransparent: true,
+        headerTitle: "",
+      }}
+    >
+      {children}
+    </Stack>
   );
 };
 

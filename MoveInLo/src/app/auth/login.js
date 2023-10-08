@@ -5,7 +5,9 @@ const LoginUI = () => {
   return (
     <View>
       <Text className="">Login Page</Text>
-      <BaseButton title={"Login"} link={"home"} />
+      <BaseButton title={"Back"} link={"/"} />
+      <BaseButton title={"Forget Password"} link={"auth/forgetpassword"} />
+      <BaseButton title={"Login"} link={"customer/home"} />
     </View>
   );
 };

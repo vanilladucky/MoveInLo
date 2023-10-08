@@ -8,7 +8,13 @@ export default function TabLayout() {
   const trackerIcon = () => <Text>⏳</Text>;
 
   return (
-    <Tabs screenOptions={{ headerShown: false }}>
+    <Tabs
+      screenOptions={{
+        headerShown: true,
+        headerTransparent: true,
+        headerTitle: "",
+      }}
+    >
       <Tabs.Screen
         name="home"
         title={"Home"}
