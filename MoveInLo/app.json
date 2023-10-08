@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "scheme": "acme",
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "icon": "./src/assets/splash/LandingLogo.png",
+    "name": "MoveInLo",
+    "slug": "MoveInLo",
+    "splash": {
+      "image": "./src/assets/splash/LandingScreen.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#181C62"
+    }
+  }
+}
