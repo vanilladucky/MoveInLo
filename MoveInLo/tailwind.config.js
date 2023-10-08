@@ -9,6 +9,7 @@ module.exports = {
         black: "#000000",
         white: "#FFFFFF",
         error: "#ED2020",
+        gray: "#635C5C",
       },
       backgroundColor: {
         primary: "#181C62",
@@ -27,6 +28,7 @@ module.exports = {
         black: "#000000",
         white: "#FFFFFF",
         error: "#ED2020",
+        gray: "#887E7E",
       },
       fontFamily: {
         RobotoBold: "RobotoBold",

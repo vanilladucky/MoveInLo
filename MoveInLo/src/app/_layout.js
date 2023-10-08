@@ -27,18 +27,7 @@ const RootLayout = () => {
     <ThemeProvider>
       <Stack
         screenOptions={{
-          title: "MoveInLo!",
-          headerStyle: {
-            backgroundColor: "#181C62",
-          },
-          headerTintColor: "#FFF",
-          headerTitleStyle: {
-            fontFamily: "RobotoBold",
-          },
-
-          // Re-enable if user wants to go back
-          headerBackTitleVisible: false,
-          headerBackVisible: false,
+          headerShown: false,
         }}
         onLayout={onFontLayoutView}
       />
