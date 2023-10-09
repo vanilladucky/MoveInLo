@@ -3,6 +3,7 @@ import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import ThemeProvider from "@src/assets/theme/ThemeProvider";
 import * as SplashScreen from "expo-splash-screen";
+import { extendTheme, NativeBaseProvider } from "native-base";
 
 const RootLayout = () => {
   const [fontsLoaded, fontError] = useFonts({
@@ -23,26 +24,39 @@ const RootLayout = () => {
     return null;
   }
 
-  return (
-    <ThemeProvider>
-      <Stack
-        screenOptions={{
-          title: "MoveInLo!",
-          headerStyle: {
-            backgroundColor: "#181C62",
-          },
-          headerTintColor: "#FFF",
-          headerTitleStyle: {
-            fontFamily: "RobotoBold",
-          },
+  const theme = extendTheme({
+    colors: {
+      primary: {
+        100: "#181C62",
+      },
+      secondary: {
+        100: "#D71440",
+      },
+    },
+    components: {
+      Input: {
+        // Can simply pass default props to change default behaviour of components.
+        baseStyle: {
+          backgroundColor: "white",
+          borderColor: "gray",
+          fontFamily: "RobotoMedium",
+          marginY: 2,
+        },
+      },
+    },
+  });
 
-          // Re-enable if user wants to go back
-          headerBackTitleVisible: false,
-          headerBackVisible: false,
-        }}
-        onLayout={onFontLayoutView}
-      />
-    </ThemeProvider>
+  return (
+    <NativeBaseProvider theme={theme}>
+      <ThemeProvider>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+          }}
+          onLayout={onFontLayoutView}
+        />
+      </ThemeProvider>
+    </NativeBaseProvider>
   );
 };
 

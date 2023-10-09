@@ -4,9 +4,26 @@ const Header = ({ children }) => {
   return (
     <Stack
       screenOptions={{
-        headerShown: true,
-        headerTransparent: true,
-        headerTitle: "",
+        // Header Title
+        title: "MoveInLo!",
+        headerStyle: {
+          backgroundColor: "#181C62",
+        },
+        headerTintColor: "#FFF",
+        headerTitleStyle: {
+          fontFamily: "RobotoBold",
+        },
+
+        // Header Back Button
+        headerBackTitle: "Back",
+        headerBackStyle: {
+          backgroundColor: "#181C62",
+        },
+        headerBackTitleStyle: {
+          fontFamily: "RobotoMedium",
+        },
+        headerBackTitleVisible: true,
+        headerBackVisible: true,
       }}
     >
       {children}

@@ -4,9 +4,8 @@ import BaseButton from "@src/components/utils/button";
 import { View, Text, Image } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Screen } from "react-native-screens";
-import { NativeBaseProvider } from "native-base";
 
-const App = () => {
+const AuthHomeUI = () => {
   return (
     <SafeAreaProvider className={`bg-primary`}>
       <Screen
@@ -25,12 +24,17 @@ const App = () => {
             MoveInLo!
           </Text>
         </View>
-        <View className={"items-center"}>
-          <BaseButton title="Begin" link="/auth" />
+        <View className={`flex flex-row space-x-4`}>
+          <View>
+            <BaseButton title="Login" link="/auth/login" />
+          </View>
+          <View>
+            <BaseButton title="Sign up" link="/auth/signup" />
+          </View>
         </View>
       </Screen>
     </SafeAreaProvider>
   );
 };
 
-export default App;
+export default AuthHomeUI;

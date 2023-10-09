@@ -1,13 +1,167 @@
-import { Text, View } from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import {
+  CheckIcon,
+  FormControl,
+  Select,
+  WarningOutlineIcon,
+} from "native-base";
+import BaseInput from "@src/components/utils/inputbox";
 import BaseButton from "@src/components/utils/button";
+import loginIcon from "@src/assets/splash/LandingLogo.png";
+import ErrorAlert from "@src/components/utils/erroralert";
 
 const LoginUI = () => {
+  const [accountInfo, setAccountInfo] = useState({
+    type: "",
+    username: "",
+    password: "",
+  });
+  const [invalidInput, setInvalidInput] = useState({
+    type: false,
+    username: false,
+    password: false,
+  });
+  const [showAlert, setShowAlert] = useState(false);
+  const router = useRouter();
+
+  const inputHandler = (input, field) => {
+    setAccountInfo(() => ({ ...accountInfo, [field]: input }));
+  };
+
+  const invalidHandler = (bool, field) => {
+    setInvalidInput(() => ({ ...accountInfo, [field]: bool }));
+  };
+
+  const resetHandler = () => {
+    accountInfo.type = "";
+    accountInfo.username = "";
+    accountInfo.password = "";
+    setShowAlert(false);
+  };
+
+  const isValidInput = () => {
+    // TODO: Insert backend logic
+    const validType = accountInfo.type !== "";
+    const validUsername = accountInfo.username !== "";
+    const validPassword = accountInfo.password !== "";
+
+    return validType && validUsername && validPassword;
+  };
+
+  const submitHandler = () => {
+    invalidHandler(!accountInfo.username, "username");
+    invalidHandler(!accountInfo.password, "password");
+    invalidHandler(!accountInfo.type, "type");
+    console.log(accountInfo);
+
+    if (isValidInput()) {
+      router.push("/customer/home");
+    } else {
+      setShowAlert(true);
+    }
+  };
+
   return (
-    <View>
-      <Text className="">Login Page</Text>
-      <BaseButton title={"Back"} link={"/"} />
-      <BaseButton title={"Forget Password"} link={"auth/forgetpassword"} />
-      <BaseButton title={"Login"} link={"customer/home"} />
+    <View className={"flex h-full w-full items-center"}>
+      {!isValidInput() && (
+        <View className={"absolute z-10 w-3/4"}>
+          <ErrorAlert
+            title={"Please try again!"}
+            message={"You have missing or invalid inputs!"}
+            onPress={() => resetHandler()}
+            shown={showAlert}
+          />
+        </View>
+      )}
+
+      <View className={"mt-28 scale-110 items-center"}>
+        <Image source={loginIcon} width={150} height={150} />
+        <Text className={"font-RobotoBold text-2xl text-primary mt-5"}>
+          MoveInLo!
+        </Text>
+      </View>
+
+      <View className={"flex flex-row mt-10"}>
+        <View className={"border-r-2 flex items-center"}>
+          <Text className="font-RobotoBold text-xl my-2 w-40 text-center">
+            Login
+          </Text>
+          <View className={"w-28 border-b-4 border-primary"} />
+        </View>
+        <View>
+          <Pressable
+            onPress={() => {
+              router.push("/auth/signup");
+            }}
+          >
+            <Text className="font-RobotoBold text-xl my-2 w-40 text-center">
+              Sign Up
+            </Text>
+          </Pressable>
+        </View>
+      </View>
+
+      <View className={"mt-8 w-3/4"}>
+        <Text className={"font-RobotoMedium"}>Account Type</Text>
+        <FormControl className={"w-1/2"}>
+          <Select
+            selectedValue={accountInfo.type}
+            accessibilityLabel={"Select"}
+            placeholder={"Select"}
+            onValueChange={(itemValue) => inputHandler(itemValue, "type")}
+            _selectedItem={{
+              endIcon: <CheckIcon size="3" />,
+            }}
+          >
+            <Select.Item label={"Customer"} value={"customer"} />
+            <Select.Item label={"Job Seeker"} value={"jobseeker"} />
+          </Select>
+          {invalidInput.type && (
+            <FormControl.ErrorMessage
+              className={"mt-0 mb-2"}
+              leftIcon={<WarningOutlineIcon size="xs" />}
+            >
+              <Text className={"text-red-600"}>Please make a selection!</Text>
+            </FormControl.ErrorMessage>
+          )}
+        </FormControl>
+
+        <BaseInput
+          title={"Username"}
+          defaultValue={accountInfo.username}
+          placeholder={"Enter your username"}
+          onChangeText={(email) => inputHandler(email, "username")}
+        />
+
+        <BaseInput
+          title={"Password"}
+          defaultValue={accountInfo.password}
+          placeholder={"Enter your password"}
+          onChangeText={(password) => inputHandler(password, "password")}
+        />
+
+        <View
+          className={
+            "flex flex-row justify-center space-x-28 mt-2 items-center"
+          }
+        >
+          <View>
+            <Text className={"font-RobotoBold text-primary"}>
+              Forget Password
+            </Text>
+          </View>
+          <View className={"flex"}>
+            <BaseButton
+              primary
+              title={"Login"}
+              onPress={submitHandler}
+              width={105}
+            />
+          </View>
+        </View>
+      </View>
     </View>
   );
 };
