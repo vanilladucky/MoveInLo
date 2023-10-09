@@ -1,12 +1,20 @@
 import { Image, Text, View } from "react-native";
 import BaseButton from "@src/components/utils/button";
-import BaseInput from "@src/components/utils/inputbox";
 import loginIcon from "@src/assets/splash/LandingLogo.png";
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
+import {
+  Box,
+  CheckIcon,
+  FormControl,
+  Input,
+  Select,
+  WarningOutlineIcon,
+} from "native-base";
 
 const LoginUI = () => {
   const [accountInfo, setAccountInfo] = useState({
+    type: "",
     username: "",
     password: "",
   });
@@ -15,10 +23,6 @@ const LoginUI = () => {
   const inputHandler = (input, field) => {
     setAccountInfo((prevState) => ({ ...accountInfo, [field]: input }));
     console.log(accountInfo);
-  };
-
-  const passwordHandler = (value) => {
-    setAccountInfo((prevState) => ({ ...accountInfo, password: value }));
   };
 
   const submitHandler = () => {
@@ -57,20 +61,34 @@ const LoginUI = () => {
       </View>
 
       <View className={"mt-10 w-3/4"}>
-        <View>
-          <Text>Account Type</Text>
-        </View>
-        <BaseInput
+        <FormControl className={"w-3/4"}>
+          <FormControl.Label>Select Account Type</FormControl.Label>
+          <Select
+            selectedValue={accountInfo.type}
+            accessibilityLabel={"Account Type"}
+            placeholder={"Account Type"}
+            onValueChange={(itemValue) => inputHandler(itemValue, "type")}
+            _selectedItem={{
+              bg: "teal.600",
+              endIcon: <CheckIcon size="5" />,
+            }}
+          >
+            <Select.Item label={"Customer"} value={"customer"} />
+            <Select.Item label={"Job Seeker"} value={"jobseeker"} />
+          </Select>
+          <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+            Please make a selection!
+          </FormControl.ErrorMessage>
+        </FormControl>
+        <Input
           placeholder={"Username"}
-          value={accountInfo.username}
-          onChangeText={(input) => inputHandler(input, "username")}
+          onChangeText={(email) => inputHandler(email, "email")}
         />
-        {
-          <BaseInput
-            placeholder={"Password"}
-            onChangeText={() => passwordHandler}
-          />
-        }
+        <Input
+          placeholder={"Password"}
+          onChangeText={(password) => inputHandler(password, "password")}
+        />
+
         <View className={"flex flex-row justify-center space-x-28 mt-2"}>
           <View>
             <Text className={"font-RobotoBold items-center"}>

@@ -1,7 +1,7 @@
 import { Text, View } from "react-native";
-import BaseButton from "@src/components/utils/button";
-import BaseInput from "@src/components/utils/inputbox";
 import { useRouter } from "expo-router";
+import { Input } from "native-base";
+import BaseButton from "@src/components/utils/button";
 
 const SignUpUI = () => {
   const router = useRouter();
@@ -26,12 +26,12 @@ const SignUpUI = () => {
       </View>
 
       <View className={"flex flex-col w-3/4 mt-8"}>
-        <BaseInput placeholder={"Email"} />
-        <BaseInput placeholder={"Username"} />
-        <BaseInput placeholder={"Age"} />
-        <BaseInput placeholder={"Phone Number"} />
-        <BaseInput placeholder={"Password"} />
-        <BaseInput placeholder={"Re-enter Password"} />
+        <Input placeholder={"Email"} />
+        <Input placeholder={"Username"} />
+        <Input placeholder={"Age"} />
+        <Input placeholder={"Phone Number"} />
+        <Input placeholder={"Password"} />
+        <Input placeholder={"Re-enter Password"} />
         <View className={"mt-4 p"}>
           <Text className={"font-RobotoMedium"}>Note:</Text>
           <Text className={"font-RobotoRegular"}>
