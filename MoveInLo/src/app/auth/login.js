@@ -23,20 +23,22 @@ const LoginUI = () => {
     username: false,
     password: false,
   });
+  const [showAlert, setShowAlert] = useState(false);
   const router = useRouter();
 
   const inputHandler = (input, field) => {
-    setAccountInfo((prevState) => ({ ...accountInfo, [field]: input }));
+    setAccountInfo(() => ({ ...accountInfo, [field]: input }));
   };
 
   const invalidHandler = (bool, field) => {
-    setInvalidInput((prevState) => ({ ...accountInfo, [field]: bool }));
+    setInvalidInput(() => ({ ...accountInfo, [field]: bool }));
   };
 
   const resetHandler = () => {
     accountInfo.type = "";
     accountInfo.username = "";
     accountInfo.password = "";
+    setShowAlert(false);
   };
 
   const isValidInput = () => {
@@ -49,15 +51,15 @@ const LoginUI = () => {
   };
 
   const submitHandler = () => {
-    // Insert backend API call to validate
     invalidHandler(!accountInfo.username, "username");
     invalidHandler(!accountInfo.password, "password");
     invalidHandler(!accountInfo.type, "type");
     console.log(accountInfo);
 
     if (isValidInput()) {
-      console.log(isValidInput());
       router.push("/customer/home");
+    } else {
+      setShowAlert(true);
     }
   };
 
@@ -67,8 +69,9 @@ const LoginUI = () => {
         <View className={"absolute z-10 w-3/4"}>
           <ErrorAlert
             title={"Please try again!"}
-            message={"You have invalid inputs!"}
-            onPress={resetHandler}
+            message={"You have missing/ invalid inputs!"}
+            onPress={() => resetHandler()}
+            shown={showAlert}
           />
         </View>
       )}
@@ -124,12 +127,14 @@ const LoginUI = () => {
 
         <BaseInput
           title={"Username"}
+          defaultValue={accountInfo.username}
           placeholder={"Enter your username"}
           onChangeText={(email) => inputHandler(email, "username")}
         />
 
         <BaseInput
           title={"Password"}
+          defaultValue={accountInfo.password}
           placeholder={"Enter your password"}
           onChangeText={(password) => inputHandler(password, "password")}
         />
