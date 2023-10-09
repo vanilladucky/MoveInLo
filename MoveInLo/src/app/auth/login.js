@@ -1,4 +1,4 @@
-import { Image, Text, View } from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import {
@@ -91,12 +91,15 @@ const LoginUI = () => {
           <View className={"w-28 border-b-4 border-primary"} />
         </View>
         <View>
-          <Link
-            href={"/auth/signup"}
-            className="font-RobotoBold text-xl my-2 w-40 text-center"
+          <Pressable
+            onPress={() => {
+              router.push("/auth/signup");
+            }}
           >
-            Sign Up
-          </Link>
+            <Text className="font-RobotoBold text-xl my-2 w-40 text-center">
+              Sign Up
+            </Text>
+          </Pressable>
         </View>
       </View>
 
