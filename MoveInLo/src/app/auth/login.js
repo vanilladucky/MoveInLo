@@ -1,5 +1,5 @@
 import { Image, Pressable, Text, View } from "react-native";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
   CheckIcon,
@@ -69,7 +69,7 @@ const LoginUI = () => {
         <View className={"absolute z-10 w-3/4"}>
           <ErrorAlert
             title={"Please try again!"}
-            message={"You have missing/ invalid inputs!"}
+            message={"You have missing or invalid inputs!"}
             onPress={() => resetHandler()}
             shown={showAlert}
           />
