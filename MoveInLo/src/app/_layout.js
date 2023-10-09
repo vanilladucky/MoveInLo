@@ -26,12 +26,12 @@ const RootLayout = () => {
 
   const theme = extendTheme({
     colors: {
-      primary: "#181C62",
-      secondary: "#D71440",
-      black: "#000000",
-      white: "#FFFFFF",
-      error: "#ED2020",
-      gray: "#635C5C",
+      primary: {
+        100: "#181C62",
+      },
+      secondary: {
+        100: "#D71440",
+      },
     },
     components: {
       Input: {
@@ -39,7 +39,7 @@ const RootLayout = () => {
         baseStyle: {
           backgroundColor: "white",
           borderColor: "gray",
-          fontFamily: "RobotoRegular",
+          fontFamily: "RobotoMedium",
           marginY: 2,
         },
       },
