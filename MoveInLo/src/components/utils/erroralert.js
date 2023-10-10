@@ -35,18 +35,18 @@ const ErrorAlert = ({ title, message, shown, ...props }) => {
               {...props}
             />
           </HStack>
-          <Box
-            pl="8"
-            _dark={{
-              _text: {
-                color: "coolGray.600",
-              },
-            }}
-          >
-            <Text className={"font-RobotoRegular"}>
-              {message ?? "Please enter a message!"}
-            </Text>
-          </Box>
+          {message && (
+            <Box
+              pl="8"
+              _dark={{
+                _text: {
+                  color: "coolGray.600",
+                },
+              }}
+            >
+              <Text className={"font-RobotoRegular"}>{message}</Text>
+            </Box>
+          )}
         </VStack>
       </Alert>
     )

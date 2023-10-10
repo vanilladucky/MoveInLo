@@ -25,6 +25,9 @@ const RootLayout = () => {
   }
 
   const theme = extendTheme({
+    colorScheme: {
+      primary: "#181C62",
+    },
     colors: {
       primary: {
         100: "#181C62",
