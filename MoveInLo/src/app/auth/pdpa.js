@@ -5,15 +5,16 @@ import { useState } from "react";
 import { useRouter } from "expo-router";
 import ErrorAlert from "@src/components/utils/erroralert";
 
-const PDPAUI = () => {
+const PDPAUI = ({ newAccountInfo }) => {
   const [acknowledged, setAcknowledged] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const router = useRouter();
   const redirectLink = "/customer/home";
 
   const acknowledgementHandler = () => {
-    console.log(acknowledged);
     if (acknowledged) {
+      // TODO: Update database with newAccountInfo
+
       router.push(redirectLink);
     } else {
       setShowAlert(true);

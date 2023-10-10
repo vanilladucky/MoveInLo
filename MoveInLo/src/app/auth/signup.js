@@ -103,7 +103,7 @@ const SignUpUI = () => {
 
   const submitHandler = () => {
     if (isValidInput()) {
-      router.push("/auth/pdpa");
+      router.push({ pathname: "/auth/pdpa", params: { newAccountInfo } });
     } else {
       setShowAlert(true);
     }
