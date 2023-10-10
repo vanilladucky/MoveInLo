@@ -72,7 +72,7 @@ const SignUpUI = () => {
     invalidHandler(!newAccountInfo.type, "type");
     console.log(newAccountInfo);
 
-    if (true) {
+    if (isValidInput()) {
       router.push("/auth/pdpa");
     } else {
       setShowAlert(true);
