@@ -2,6 +2,7 @@ import { Image, Pressable, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
+  Box,
   CheckIcon,
   FormControl,
   Select,
@@ -27,11 +28,12 @@ const LoginUI = () => {
   const router = useRouter();
 
   const inputHandler = (input, field) => {
-    setAccountInfo(() => ({ ...accountInfo, [field]: input }));
+    setAccountInfo((prevState) => ({ ...prevState, [field]: input }));
+    setShowAlert(false);
   };
 
   const invalidHandler = (bool, field) => {
-    setInvalidInput(() => ({ ...accountInfo, [field]: bool }));
+    setInvalidInput((prevState) => ({ ...prevState, [field]: bool }));
   };
 
   const resetHandler = () => {
@@ -118,29 +120,34 @@ const LoginUI = () => {
             <Select.Item label={"Customer"} value={"customer"} />
             <Select.Item label={"Job Seeker"} value={"jobseeker"} />
           </Select>
-          {invalidInput.type && (
-            <FormControl.ErrorMessage
-              className={"mt-0 mb-2"}
-              leftIcon={<WarningOutlineIcon size="xs" />}
-            >
-              <Text className={"text-red-600"}>Please make a selection!</Text>
-            </FormControl.ErrorMessage>
-          )}
         </FormControl>
+        <Box
+          className={"flex flex-row space-x-2 mt-0 mb-2"}
+          style={{
+            display: showAlert && invalidInput.type === "" ? "" : "none",
+          }}
+        >
+          <View className={"mt-0.5 ml-1"}>
+            <WarningOutlineIcon size="xs" color={"red.500"} />
+          </View>
+          <Text className={"text-red-600"}>Please make a selection!</Text>
+        </Box>
 
-        <BaseInput
-          title={"Username"}
-          defaultValue={accountInfo.username}
-          placeholder={"Enter your username"}
-          onChangeText={(email) => inputHandler(email, "username")}
-        />
+        <View>
+          <BaseInput
+            title={"Username"}
+            defaultValue={accountInfo.username}
+            placeholder={"Enter your username"}
+            onChangeText={(email) => inputHandler(email, "username")}
+          />
 
-        <BaseInput
-          title={"Password"}
-          defaultValue={accountInfo.password}
-          placeholder={"Enter your password"}
-          onChangeText={(password) => inputHandler(password, "password")}
-        />
+          <BaseInput
+            title={"Password"}
+            defaultValue={accountInfo.password}
+            placeholder={"Enter your password"}
+            onChangeText={(password) => inputHandler(password, "password")}
+          />
+        </View>
 
         <View
           className={
@@ -148,9 +155,15 @@ const LoginUI = () => {
           }
         >
           <View>
-            <Text className={"font-RobotoBold text-primary"}>
-              Forget Password
-            </Text>
+            <Pressable
+              onPress={() => {
+                router.push("/auth/forgetpassword");
+              }}
+            >
+              <Text className={"font-RobotoBold text-primary"}>
+                Forget Password
+              </Text>
+            </Pressable>
           </View>
           <View className={"flex"}>
             <BaseButton
