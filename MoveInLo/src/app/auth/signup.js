@@ -25,11 +25,11 @@ const SignUpUI = () => {
   const router = useRouter();
 
   const inputHandler = (input, field) => {
-    setNewAccountInfo(() => ({ ...newAccountInfo, [field]: input }));
+    setNewAccountInfo((prevState) => ({ ...prevState, [field]: input }));
   };
 
   const invalidHandler = (bool, field) => {
-    setInvalidInput(() => ({ ...newAccountInfo, [field]: bool }));
+    setInvalidInput((prevState) => ({ ...prevState, [field]: bool }));
   };
 
   const resetHandler = () => {
@@ -52,9 +52,7 @@ const SignUpUI = () => {
     const validUsername = newAccountInfo.username !== "";
     const validPassword =
       newAccountInfo.password !== "" &&
-      newAccountInfo.password.includes(
-        "^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+])[A-Za-z\\d!@#$%^&*()_+]{8,}$\n"
-      );
+      newAccountInfo.password.includes("*[A-Z]");
     const validAge = newAccountInfo.age >= 18 && newAccountInfo.age < 100;
     const validNumber = newAccountInfo.number.length === 8;
 
@@ -74,8 +72,8 @@ const SignUpUI = () => {
     invalidHandler(!newAccountInfo.type, "type");
     console.log(newAccountInfo);
 
-    if (isValidInput()) {
-      router.push("/customer/home");
+    if (true) {
+      router.push("/auth/pdpa");
     } else {
       setShowAlert(true);
     }
