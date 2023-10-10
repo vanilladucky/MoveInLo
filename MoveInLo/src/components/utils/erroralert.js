@@ -4,7 +4,7 @@ import { Text } from "react-native";
 const ErrorAlert = ({ title, message, shown, ...props }) => {
   return (
     shown && (
-      <Alert className={"w-full"} status="error">
+      <Alert className={"w-full h-full"} status="error">
         <VStack space={0.5} flexShrink={1} w="100%">
           <HStack
             flexShrink={1}
