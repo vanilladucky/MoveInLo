@@ -1,14 +1,21 @@
 import { Text, TextInput, View } from "react-native";
 import React from "react";
 
-const BaseInput = ({ title, defaultValue, className, ...props }) => {
+const BaseInput = ({
+  title,
+  defaultValue,
+  borderColor,
+  className,
+  ...props
+}) => {
   return (
     <View className={"my-2 w-full"}>
       <View className={"mb-2 "}>
         <Text className={"font-RobotoMedium"}>{title ?? "Title"}</Text>
       </View>
       <View
-        className={"border-primary border-[1px] rounded-md bg-white p-2 flex"}
+        className={"border-[1px] rounded-md bg-white p-2 flex"}
+        style={{ borderColor }}
       >
         <TextInput
           {...props}
