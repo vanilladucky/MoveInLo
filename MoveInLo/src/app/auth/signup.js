@@ -149,9 +149,6 @@ const SignUpUI = () => {
           placeholder={"Enter your email"}
           defaultValue={newAccountInfo.email}
           onChangeText={(email) => inputHandler(email, "email")}
-          borderColor={
-            showAlert && invalidInput.email === "" ? "red" : "primary"
-          }
         />
         {showAlert && !invalidInput.email && (
           <View>

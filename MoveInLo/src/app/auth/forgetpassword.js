@@ -1,36 +1,38 @@
 import { Text, View } from "react-native";
-import BaseInput from "@src/components/utils/inputbox";
-import BaseButton from "@src/components/utils/button";
+import { useState } from "react";
+import { useRouter } from "expo-router";
 import {
   Box,
+  Button,
   CheckIcon,
   Collapse,
   FormControl,
   HStack,
+  Modal,
   Select,
   VStack,
-  WarningOutlineIcon,
 } from "native-base";
-import { useState } from "react";
 import ErrorAlert from "@src/components/utils/erroralert";
-import { useRouter } from "expo-router";
+import BaseInput from "@src/components/utils/inputbox";
+import BaseButton from "@src/components/utils/button";
 
 const ForgetPasswordUI = () => {
   const [accountInfo, setAccountInfo] = useState({
     type: "",
     email: "",
     newPassword: "",
-    newPassword2: "",
+    passwordCheck: "",
   });
 
   const [invalidInput, setInvalidInput] = useState({
     type: "",
     email: "",
-    password: "",
-    doNotMatch: "",
+    newPassword: "",
+    passwordCheck: "",
   });
   const [isVisible, setIsVisible] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const router = useRouter();
 
   const inputHandler = (input, field) => {
@@ -38,32 +40,52 @@ const ForgetPasswordUI = () => {
     setShowAlert(false);
   };
 
-  const messageHandler = async (message, field) => {
-    setInvalidInput((prevState) => ({ ...prevState, [field]: message }));
+  const invalidHandler = (bool, field) => {
+    setInvalidInput((prevState) => ({ ...prevState, [field]: bool }));
+    return bool;
   };
 
   const resetHandler = () => {
     setShowAlert(false);
   };
 
-  const message = () => {
-    return Object.values(invalidInput).reduce((finalMessage, key) => {
-      const m = key !== "" ? "\n  - " + key : "";
-      return finalMessage + m;
-    }, "Error(s): ");
-  };
+  const validationHandler = (field) => {
+    // TODO: Insert backend logic
+    const validEmail =
+      accountInfo.email !== "" &&
+      accountInfo.email.includes("@") &&
+      accountInfo.email.includes(".com");
 
-  const searchHandler = async () => {
-    // TODO: Backend logic to find email
-    const validEmail = accountInfo.email !== "";
     const validType = accountInfo.type !== "";
 
-    await messageHandler(
-      !validType ? "Account type not selected." : "",
-      "type"
-    );
+    const validPassword =
+      accountInfo.newPassword.length >= 8 &&
+      /[A-Z]/.test(accountInfo.newPassword) &&
+      /[0-9]/.test(accountInfo.newPassword) &&
+      /[!@#$%^&*()_+]/.test(accountInfo.newPassword);
 
-    await messageHandler(!validEmail ? "Invalid email address" : "", "email");
+    const matchingPassword =
+      accountInfo.newPassword === accountInfo.passwordCheck;
+
+    switch (field) {
+      case "type":
+        return invalidHandler(validType, field);
+
+      case "email":
+        return invalidHandler(validEmail, field);
+
+      case "newPassword":
+        return invalidHandler(validPassword, field);
+
+      case "passwordCheck":
+        return invalidHandler(matchingPassword, field);
+    }
+  };
+
+  const searchHandler = () => {
+    // TODO: Backend logic to find email
+    const validEmail = validationHandler("email");
+    const validType = validationHandler("type");
 
     if (validType && validEmail) {
       setIsVisible(true);
@@ -72,50 +94,60 @@ const ForgetPasswordUI = () => {
     }
   };
 
-  const submitHandler = async () => {
+  const submitHandler = () => {
     // TODO: Backend logic for validating email
-    const validEmail = accountInfo.email !== "";
-    const validNewPassword = accountInfo.newPassword.length >= 8;
-    const matchingPassword =
-      accountInfo.newPassword2 === accountInfo.newPassword;
-
-    const redirectedRoute =
-      accountInfo.type === "customer" ? "customer/home" : "jobseeker/home";
-
-    await messageHandler(
-      !validNewPassword ? "Invalid password." : "",
-      "password"
-    );
-
-    await messageHandler(
-      !matchingPassword ? "Passwords do not match!" : "",
-      "doNotMatch"
-    );
-
-    await messageHandler(!validEmail ? "Invalid email address" : "", "email");
-
-    console.log(accountInfo);
+    const validNewPassword = validationHandler("newPassword");
+    const matchingPassword = validationHandler("passwordCheck");
+    console.log(validNewPassword, matchingPassword);
 
     if (validNewPassword && matchingPassword) {
-      // TODO: Update password in database
-      router.push(redirectedRoute);
+      // TODO: Update newPassword in database
+      setModalVisible(true);
     } else {
       setShowAlert(true);
     }
   };
 
+  const redirectedRoute =
+    accountInfo.type === "customer" ? "customer/home" : "jobseeker/home";
+
+  const acknowledgementHandler = () => {
+    setModalVisible(false);
+    router.push(redirectedRoute);
+  };
+
   return (
     <View className={"flex h-full w-full items-center"}>
-      <View className={"absolute z-10 w-3/4 h-28"}>
+      <Modal isOpen={modalVisible} onClose={setModalVisible} size={"sm"}>
+        <Modal.Content maxH="212">
+          <Modal.Body>
+            <View className={"mt-2 items-center"}>
+              <Text className={"font-RobotoBold text-lg"}>
+                Changed Password
+              </Text>
+              <Text className={"font-RobotoRegular mt-4"}>
+                Your password has been changed successfully.
+              </Text>
+              <Button
+                onPress={acknowledgementHandler}
+                className={"mt-8 w-20 h-10 bg-primary"}
+              >
+                <Text className={"font-RobotoBold text-white"}>OK</Text>
+              </Button>
+            </View>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
+      <View className={"absolute z-10 w-3/4 h-20"}>
         {showAlert && (
           <ErrorAlert
-            message={message()}
+            message={"You have missing or invalid inputs!"}
             onPress={() => resetHandler()}
             shown={showAlert}
           />
         )}
       </View>
-      <Text className={"font-RobotoBold text-2xl mt-36"}>Forget Password</Text>
+      <Text className={"font-RobotoBold text-2xl mt-28"}>Forget Password</Text>
 
       <View className={"w-3/4 mt-8 flex flex-col"}>
         <FormControl className={"w-1/2"}>
@@ -139,9 +171,6 @@ const ForgetPasswordUI = () => {
             display: showAlert && accountInfo.type === "" ? "" : "none",
           }}
         >
-          <View className={"mt-0.5 ml-1"}>
-            <WarningOutlineIcon size="xs" color={"red.500"} />
-          </View>
           <Text className={"text-red-600"}>Please make a selection!</Text>
         </Box>
 
@@ -152,6 +181,13 @@ const ForgetPasswordUI = () => {
             placeholder={"Enter your email address"}
             onChangeText={(email) => inputHandler(email, "email")}
           />
+          {showAlert && !invalidInput.email && (
+            <View className={"mb-2"}>
+              <Text className={"text-error font-RobotoRegular text-[13px]"}>
+                Please enter a valid email.
+              </Text>
+            </View>
+          )}
         </View>
 
         <View className={"items-end mt-4"}>
@@ -168,11 +204,34 @@ const ForgetPasswordUI = () => {
               />
             </HStack>
             <HStack>
+              {showAlert && !invalidInput.newPassword && (
+                <View className={"-mt-1"}>
+                  <Text
+                    className={
+                      "text-error text-justify font-RobotoRegular text-[13px]"
+                    }
+                  >
+                    Password must be at least 8 characters with 1 capital
+                    letter, 1 number and 1 special character.
+                  </Text>
+                </View>
+              )}
+            </HStack>
+            <HStack>
               <BaseInput
                 title={"Re-enter new password"}
-                defaultValue={accountInfo.newPassword2}
-                onChangeText={(input) => inputHandler(input, "newPassword2")}
+                defaultValue={accountInfo.passwordCheck}
+                onChangeText={(input) => inputHandler(input, "passwordCheck")}
               />
+            </HStack>
+            <HStack>
+              {showAlert && !invalidInput.passwordCheck && (
+                <View className={"mb-2"}>
+                  <Text className={"text-error font-RobotoRegular text-[13px]"}>
+                    Both passwords must match.
+                  </Text>
+                </View>
+              )}
             </HStack>
           </VStack>
 
