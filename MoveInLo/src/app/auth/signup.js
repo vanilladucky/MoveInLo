@@ -11,6 +11,7 @@ import {
 import BaseButton from "@src/components/utils/button";
 import BaseInput from "@src/components/utils/inputbox";
 import ErrorAlert from "@src/components/utils/erroralert";
+import postNewAccount from "@src/api/auth/postNewAccount";
 
 const SignUpUI = () => {
   const [newAccountInfo, setNewAccountInfo] = useState({
@@ -32,6 +33,7 @@ const SignUpUI = () => {
     passwordCheck: false,
   });
   const [showAlert, setShowAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
   const router = useRouter();
 
   const inputHandler = (input, field) => {
@@ -101,9 +103,21 @@ const SignUpUI = () => {
     }, true);
   };
 
-  const submitHandler = () => {
+  const submitHandler = async () => {
     if (isValidInput()) {
-      router.push({ pathname: "/auth/pdpa", params: { newAccountInfo } });
+      await postNewAccount(newAccountInfo).then((json) => {
+        const validResponse = json !== null ? !!json.success : false;
+        if (validResponse) {
+          console.log(json);
+          router.push({
+            pathname: "/auth/pdpa",
+            params: { type: json.body.type },
+          });
+        } else {
+          setErrorMessage(json.body);
+          setShowAlert(true);
+        }
+      });
     } else {
       setShowAlert(true);
     }
@@ -116,7 +130,7 @@ const SignUpUI = () => {
         <View className={"absolute z-10 w-3/4"}>
           <ErrorAlert
             title={"Please try again!"}
-            message={"You have missing or invalid inputs!"}
+            message={errorMessage ?? "You have missing or invalid inputs!"}
             onPress={() => setShowAlert(false)}
             shown={showAlert}
           />
@@ -186,8 +200,8 @@ const SignUpUI = () => {
                   endIcon: <CheckIcon size="3" />,
                 }}
               >
-                <Select.Item label={"Customer"} value={"customer"} />
-                <Select.Item label={"Job Seeker"} value={"jobseeker"} />
+                <Select.Item label={"Customer"} value={"Customer"} />
+                <Select.Item label={"Job Seeker"} value={"JobSeeker"} />
               </Select>
             </FormControl>
             {showAlert && !invalidInput.type && (
@@ -281,7 +295,7 @@ const SignUpUI = () => {
               primary
               title={"Sign up"}
               onPress={() => submitHandler()}
-              width={"full"}
+              width={"%full%"}
             />
           </View>
         </View>

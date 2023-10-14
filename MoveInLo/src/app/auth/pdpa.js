@@ -2,20 +2,19 @@ import { Text, View } from "react-native";
 import BaseButton from "@src/components/utils/button";
 import { Checkbox, FlatList, HStack } from "native-base";
 import { useState } from "react";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import ErrorAlert from "@src/components/utils/erroralert";
 
-const PDPAUI = ({ newAccountInfo }) => {
+const PDPAUI = () => {
   const [acknowledged, setAcknowledged] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const router = useRouter();
-  const redirectLink = "/customer/home";
+  const { type } = useLocalSearchParams();
+  const redirectLink = type === "Customer" ? "customer/home" : "jobseeker/home";
 
   const acknowledgementHandler = () => {
     if (acknowledged) {
-      // TODO: Update database with newAccountInfo
-
-      router.push(redirectLink);
+      router.push({ pathname: redirectLink });
     } else {
       setShowAlert(true);
     }
@@ -118,7 +117,7 @@ const PDPAUI = ({ newAccountInfo }) => {
           <BaseButton
             title={"Acknowledge"}
             onPress={acknowledgementHandler}
-            width={"full"}
+            width={"%full%"}
           />
         </View>
       </View>

@@ -8,34 +8,89 @@ This project is for an mobile application for MoveInLo!
 
 ## Set-up Guide for New Developers
 
-Navigate to the project directory
+> **Note**: Both client and server need to be set up correctly for the mobile app to be fully functional.
+
+>Run the **client & server on separate instances** of your CLI terminal. 
+
+### Setting up the Server (Local)
+> **Note**: In order to call APIs in React-Native for local development, we would need to specify the IP address.
+
+1. Navigate to the project directory.
 ```
 cd /MoveInLo
 ```
 
-Install dependency packages
+2. Check your IP address for your MacOS or Windows and update the your `.env` file
+```
+cp .env.example .env
+```
+
+Within the `.env` file,
+```
+IP_ADDRESS="<insert_your_ip_address>"
+PORT=4000
+```
+
+3. Navigate to the server directory.
+```
+cd /server
+```
+
+4. Install the server side packages.
 ```
 npm install
 ```
 
-Starting Development Server
+4. In your CLI terminal, start the server using the following command:
+```
+node server.js
+```
+
+5. You should see the following output in your terminal.
+```
+Starting up server...
+Server is running on port: 4000
+MongoDB connected: ac-ib97lax-shard-00-02.03plysc.mongodb.net
+```
+
+6. Allow the server to run on this terminal while you run the client mobile app.
+
+<br>
+<hr>
+
+
+
+### Setting up the Client
+1. Navigate to the project directory (if not already there)
+```
+cd /MoveInLo
+```
+
+2. Install dependency packages
+```
+npm install
+```
+
+3. Starting Development Server (You may specify the `--clear` flag to clear local cache. )
 ```
 npx expo start --clear
 ```
 
-Starting Development Server (To index on mobile)
-> Note: You will need to install expo on your mobile device to use this feature.
-```
-npx expo start --tunnel
-```
-Using an emulator (Download ios/ android emulator)
+4. Using an emulator (Download ios/ android emulator)
 > Note: You will need to have an ios or android emulator to use this feature. Verify that your simulator is functioning as expected.
 ```
 npx expo start --ios
 npx expo start --android
 ```
 
+**Alternative:** Starting Development Server (Mobile version)
+   - Note: You will need to install expo on your mobile device to use this feature.
+```
+npx expo start --tunnel
+```
+
 View this link for guide on [Expo Setup](https://docs.expo.dev/workflow/ios-simulator/#expo-cli-is-printing-an-error-message-about-xcrun-what-do-i-do).
+
 
 <hr>
 

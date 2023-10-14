@@ -12,6 +12,7 @@ import BaseInput from "@src/components/utils/inputbox";
 import BaseButton from "@src/components/utils/button";
 import loginIcon from "@src/assets/splash/LandingLogo.png";
 import ErrorAlert from "@src/components/utils/erroralert";
+import postLoginAccount from "@src/api/auth/postLoginAccount";
 
 const LoginUI = () => {
   const [accountInfo, setAccountInfo] = useState({
@@ -25,6 +26,7 @@ const LoginUI = () => {
     password: false,
   });
   const [showAlert, setShowAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
   const router = useRouter();
 
   const inputHandler = (input, field) => {
@@ -37,9 +39,6 @@ const LoginUI = () => {
   };
 
   const resetHandler = () => {
-    accountInfo.type = "";
-    accountInfo.username = "";
-    accountInfo.password = "";
     setShowAlert(false);
   };
 
@@ -52,14 +51,21 @@ const LoginUI = () => {
     return validType && validUsername && validPassword;
   };
 
-  const submitHandler = () => {
+  const submitHandler = async () => {
     invalidHandler(!accountInfo.username, "username");
     invalidHandler(!accountInfo.password, "password");
     invalidHandler(!accountInfo.type, "type");
-    console.log(accountInfo);
 
     if (isValidInput()) {
-      router.push("/customer/home");
+      await postLoginAccount(accountInfo).then((json) => {
+        const validResponse = json !== null ? !!json.success : false;
+        if (validResponse) {
+          router.push("/customer/home");
+        } else {
+          setErrorMessage(json.body);
+          setShowAlert(true);
+        }
+      });
     } else {
       setShowAlert(true);
     }
@@ -67,11 +73,11 @@ const LoginUI = () => {
 
   return (
     <View className={"flex h-full w-full items-center"}>
-      {!isValidInput() && (
+      {showAlert && (
         <View className={"absolute z-10 w-3/4"}>
           <ErrorAlert
             title={"Please try again!"}
-            message={"You have missing or invalid inputs!"}
+            message={errorMessage ?? "You have missing or invalid inputs!"}
             onPress={() => resetHandler()}
             shown={showAlert}
           />
@@ -117,8 +123,8 @@ const LoginUI = () => {
               endIcon: <CheckIcon size="3" />,
             }}
           >
-            <Select.Item label={"Customer"} value={"customer"} />
-            <Select.Item label={"Job Seeker"} value={"jobseeker"} />
+            <Select.Item label={"Customer"} value={"Customer"} />
+            <Select.Item label={"Job Seeker"} value={"JobSeeker"} />
           </Select>
         </FormControl>
         <Box
@@ -136,7 +142,7 @@ const LoginUI = () => {
         <View>
           <BaseInput
             title={"Username"}
-            defaultValue={accountInfo.username}
+            defaultValue={accountInfo.username.trim()}
             placeholder={"Enter your username"}
             onChangeText={(email) => inputHandler(email, "username")}
           />

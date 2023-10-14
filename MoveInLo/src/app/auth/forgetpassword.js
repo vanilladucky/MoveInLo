@@ -15,6 +15,8 @@ import {
 import ErrorAlert from "@src/components/utils/erroralert";
 import BaseInput from "@src/components/utils/inputbox";
 import BaseButton from "@src/components/utils/button";
+import getAccount from "@src/api/auth/getAccount";
+import postNewPassword from "@src/api/auth/postNewPassword";
 
 const ForgetPasswordUI = () => {
   const [accountInfo, setAccountInfo] = useState({
@@ -33,6 +35,8 @@ const ForgetPasswordUI = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [accountId, setAccountId] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
   const router = useRouter();
 
   const inputHandler = (input, field) => {
@@ -50,7 +54,6 @@ const ForgetPasswordUI = () => {
   };
 
   const validationHandler = (field) => {
-    // TODO: Insert backend logic
     const validEmail =
       accountInfo.email !== "" &&
       accountInfo.email.includes("@") &&
@@ -82,38 +85,53 @@ const ForgetPasswordUI = () => {
     }
   };
 
-  const searchHandler = () => {
-    // TODO: Backend logic to find email
+  const searchHandler = async () => {
     const validEmail = validationHandler("email");
     const validType = validationHandler("type");
 
     if (validType && validEmail) {
-      setIsVisible(true);
+      await getAccount({
+        email: accountInfo.email,
+        type: accountInfo.type,
+      }).then((json) => {
+        const validResponse = json !== null ? !!json.success : false;
+        if (validResponse) {
+          setAccountId(json.body._id);
+          setIsVisible(true);
+        } else {
+          setErrorMessage(json.body);
+          setShowAlert(true);
+        }
+      });
     } else {
       setShowAlert(true);
     }
   };
 
-  const submitHandler = () => {
-    // TODO: Backend logic for validating email
+  const submitHandler = async () => {
     const validNewPassword = validationHandler("newPassword");
     const matchingPassword = validationHandler("passwordCheck");
-    console.log(validNewPassword, matchingPassword);
 
     if (validNewPassword && matchingPassword) {
-      // TODO: Update newPassword in database
-      setModalVisible(true);
+      if (accountId) {
+        const updatedAccount = await postNewPassword({
+          id: accountId,
+          body: accountInfo,
+        });
+        if (updatedAccount) {
+          setModalVisible(true);
+        } else {
+          setShowAlert(true);
+        }
+      }
     } else {
       setShowAlert(true);
     }
   };
-
-  const redirectedRoute =
-    accountInfo.type === "customer" ? "customer/home" : "jobseeker/home";
 
   const acknowledgementHandler = () => {
     setModalVisible(false);
-    router.push(redirectedRoute);
+    router.push("auth/login");
   };
 
   return (
@@ -141,7 +159,7 @@ const ForgetPasswordUI = () => {
       <View className={"absolute z-10 w-3/4 h-20"}>
         {showAlert && (
           <ErrorAlert
-            message={"You have missing or invalid inputs!"}
+            message={errorMessage ?? "You have missing or invalid inputs!"}
             onPress={() => resetHandler()}
             shown={showAlert}
           />
@@ -161,8 +179,8 @@ const ForgetPasswordUI = () => {
               endIcon: <CheckIcon size="3" />,
             }}
           >
-            <Select.Item label={"Customer"} value={"customer"} />
-            <Select.Item label={"Job Seeker"} value={"jobseeker"} />
+            <Select.Item label={"Customer"} value={"Customer"} />
+            <Select.Item label={"Job Seeker"} value={"JobSeeker"} />
           </Select>
         </FormControl>
         <Box
