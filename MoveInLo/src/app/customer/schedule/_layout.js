@@ -1,7 +1,12 @@
 import Header from "@src/components/navbar/header";
+import React from "react";
+import { Stack } from "expo-router";
 
-const StackLayout = () => {
-  return <Header />;
-};
-
-export default StackLayout;
+export default function StackLayout() {
+  return (
+    <Header>
+      <Stack.Screen name={"options"} />
+      <Stack.Screen name={"movein"} />
+    </Header>
+  );
+}

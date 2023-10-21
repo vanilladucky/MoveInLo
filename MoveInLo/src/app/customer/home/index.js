@@ -1,7 +1,10 @@
 import { View, Text } from "react-native";
 import { ScrollView } from "native-base";
 import React from "react";
-import LandingIcon from "@src/assets/splash/LandingLogo.png";
+import BoxIcon from "@src/assets/splash/BoxIcon.png";
+import CalendarIcon from "@src/assets/splash/CalendarIcon.png";
+import DeliveryIcon from "@src/assets/splash/DeliveryIcon.png";
+import TimerIcon from "@src/assets/splash/TimerIcon.png";
 import BaseCard from "@src/components/utils/card";
 import BaseButton from "@src/components/utils/button";
 
@@ -11,25 +14,25 @@ const CustomerHomeUI = () => {
       title: "Schedule a pickup",
       description:
         "Specify the date, time, and location for our team to collect your items.",
-      source: LandingIcon,
+      source: CalendarIcon,
     },
     {
       title: "Expert Storage",
       description:
         "Your belongings will be securely stored in our warehouses until you need them back.",
-      source: LandingIcon,
+      source: BoxIcon,
     },
     {
       title: "Convenient delivery",
       description:
         "Choose a delivery date and location, and we'll bring your items right to you.",
-      source: LandingIcon,
+      source: DeliveryIcon,
     },
     {
       title: "Track progress",
       description:
         "Stay updated with the collection, storage, and delivery processes.",
-      source: LandingIcon,
+      source: TimerIcon,
     },
   ];
 
@@ -42,7 +45,7 @@ const CustomerHomeUI = () => {
           borderColor: "red",
           alignItems: "left",
           margin: 10,
-          marginTop: 17,
+          marginTop: 36,
           justifyContent: "space-evenly",
         }}
       >
@@ -75,7 +78,11 @@ const CustomerHomeUI = () => {
       })}
 
       <View className={"flex items-center w-full mt-2"}>
-        <BaseButton primary title={"Schedule"} link={"customer/schedule"} />
+        <BaseButton
+          primary
+          title={"Schedule"}
+          link={"/customer/schedule/options"}
+        />
       </View>
     </ScrollView>
   );

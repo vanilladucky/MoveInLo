@@ -26,7 +26,7 @@ const AuthHomeUI = () => {
         </View>
         <View className={`flex flex-row space-x-4`}>
           <View>
-            <BaseButton title="Login" link="/auth/login" />
+            <BaseButton title="Login" link="/customer/home" />
           </View>
           <View>
             <BaseButton title="Sign up" link="/auth/signup" />

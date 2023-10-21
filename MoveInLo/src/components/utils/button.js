@@ -11,6 +11,7 @@ const BaseButton = ({
   height,
   link,
   onPress,
+  textSize,
   ...props
 }) => {
   const { theme } = useTheme();
@@ -35,7 +36,10 @@ const BaseButton = ({
     >
       <Text
         className="font-RobotoBlack text-base"
-        style={{ color: primary ? theme.white : theme.primary }}
+        style={{
+          color: primary ? theme.white : theme.primary,
+          fontSize: textSize ?? 15,
+        }}
       >
         {title}
       </Text>

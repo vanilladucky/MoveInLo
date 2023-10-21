@@ -4,7 +4,6 @@ import BaseButton from "@src/components/utils/button";
 import { View, Text, Image } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Screen } from "react-native-screens";
-import { NativeBaseProvider } from "native-base";
 
 const App = () => {
   return (

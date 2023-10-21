@@ -118,6 +118,6 @@ This allows us to achieve the following benefits:
 ## Developer Guide
 For frontend routing convention, we will adhere by the following standards for readability 
 and adherence to the Expo best practices.
-- Create a `_layout.js` and `index.js` for each page.
+- Create a `_layout.js` and `movein.js` for each page.
 - Nested routes can be accessed using the following convention, with each nested route being a directory.
   - `customer/schedule/scheduler`

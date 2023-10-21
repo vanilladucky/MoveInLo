@@ -57,7 +57,11 @@ const RootLayout = () => {
             headerShown: false,
           }}
           onLayout={onFontLayoutView}
-        />
+        >
+          <Stack.Screen name={"auth"} />
+          <Stack.Screen name={"customer"} />
+          <Stack.Screen name={"jobseeker"} />
+        </Stack>
       </ThemeProvider>
     </NativeBaseProvider>
   );

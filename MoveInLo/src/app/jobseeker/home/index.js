@@ -5,7 +5,7 @@ const CustomerHomeUI = () => {
   return (
     <View>
       <Text>Home</Text>
-      <BaseButton title={"as"} link={"/home/index"} />
+      <BaseButton title={"as"} link={"/home/movein"} />
     </View>
   );
 };

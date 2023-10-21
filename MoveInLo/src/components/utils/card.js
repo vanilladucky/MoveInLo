@@ -2,10 +2,11 @@ import { Image, Text, View } from "react-native";
 import React from "react";
 
 const BaseCard = ({ title, index, description, source }) => {
+  const size = 75;
   return (
     <View className={"flex flex-row mx-5 my-3 pb-2 border-b-[1px] border-gray"}>
-      <View className={"items-center justify-center w-1/4 scale-50 -mt-4"}>
-        <Image source={source} />
+      <View className={"items-center justify-center mx-3"}>
+        <Image source={source} style={{ height: size, width: size }} />
       </View>
       <View className={"flex flex-col ml-4 w-4/6"}>
         <View>

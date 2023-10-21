@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 
-const Header = ({ children }) => {
+const Header = ({ children, ...props }) => {
   return (
     <Stack
       screenOptions={{
@@ -25,6 +25,7 @@ const Header = ({ children }) => {
         headerBackTitleVisible: true,
         headerBackVisible: true,
       }}
+      {...props}
     >
       {children}
     </Stack>

@@ -10,21 +10,24 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        headerShown: true,
-        headerTransparent: true,
-        headerTitle: "",
+        headerShown: false,
       }}
     >
       <Tabs.Screen
         name="home"
         title={"Home"}
-        options={{ title: "Home", tabBarIcon: homeIcon }}
+        options={{
+          title: "Home",
+          tabBarIcon: homeIcon,
+          href: "/customer/home",
+        }}
       />
       <Tabs.Screen
         name="schedule"
         options={{
           title: "Schedule",
           tabBarIcon: scheduleIcon,
+          href: "/customer/schedule/options",
         }}
       />
       <Tabs.Screen
