@@ -35,6 +35,7 @@ export default function TabLayout() {
         options={{
           title: "Tracker",
           tabBarIcon: trackerIcon,
+          href: "/customer/tracker",
         }}
       />
     </Tabs>

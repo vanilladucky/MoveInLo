@@ -181,7 +181,11 @@ const MoveInSchedulerUI = () => {
               marginTop: 15,
             }}
           >
-            <BaseButton title="Schedule" width="70%" />
+            <BaseButton
+              title="Schedule"
+              width="70%"
+              link={"/customer/schedule/moveinsuccess"}
+            />
           </View>
           <View
             style={{
