@@ -5,7 +5,7 @@ import BaseButton from "@src/components/utils/button";
 import BaseInput from "@src/components/utils/inputbox";
 import LandingIcon from "@src/assets/splash/LandingLogo.png";
 import DateFormat from "@src/components/utils/dateformat";
-import TimeFormat from "@src/components/utils/timerformat";
+import TimeFormat from "@src/components/utils/timeformat";
 import { router, useLocalSearchParams } from "expo-router";
 
 const SchedulerUI = () => {
