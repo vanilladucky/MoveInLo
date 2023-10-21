@@ -1,5 +1,5 @@
 import React from "react";
-import LandingIcon from "@src/assets/splash/LandingLogo.png";
+import QuestionIcon from "@src/assets/splash/QuestionIcon.png";
 import BaseButton from "@src/components/utils/button";
 import { View, Text, Image } from "react-native";
 import { router } from "expo-router";
@@ -24,7 +24,7 @@ const SchedulingOptionsUI = () => {
           className={"flex flex-row"}
           style={{ margin: 10, justifyContent: "center" }}
         >
-          <Image source={LandingIcon} />
+          <Image source={QuestionIcon} />
         </View>
         <View
           className={"flex flex-row"}
