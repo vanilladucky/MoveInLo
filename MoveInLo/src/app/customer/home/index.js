@@ -52,7 +52,7 @@ const CustomerHomeUI = () => {
         <Text className={"font-RobotoBold text-2xl"}>
           Welcome to Our Moving & Storage Service!
         </Text>
-        <View className={"mt-2"}>
+        <View className={"w-full  justify-center mt-2"}>
           <Text className={"font-RobotoLight"}>
             Store your items hassle-free
           </Text>

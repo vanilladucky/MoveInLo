@@ -1,6 +1,22 @@
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
+import BaseButton from "@src/components/utils/button";
+import React from "react";
 
-const Header = ({ children, ...props }) => {
+const Header = ({ children, signOut, ...props }) => {
+  const SignOutButton = () => {
+    const signOutHandler = () => {
+      // Need to check if it throws error
+      router.replace("/index");
+      router.push("/auth");
+    };
+    return signOut ? (
+      <BaseButton
+        title={"Sign Out"}
+        height={30}
+        onPress={() => signOutHandler()}
+      />
+    ) : null;
+  };
   return (
     <Stack
       screenOptions={{
@@ -24,6 +40,7 @@ const Header = ({ children, ...props }) => {
         },
         headerBackTitleVisible: true,
         headerBackVisible: true,
+        headerRight: SignOutButton,
       }}
       {...props}
     >

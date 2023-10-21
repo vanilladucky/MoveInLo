@@ -6,9 +6,10 @@ import BaseInput from "@src/components/utils/inputbox";
 import LandingIcon from "@src/assets/splash/LandingLogo.png";
 import DateFormat from "@src/components/utils/dateformat";
 import TimeFormat from "@src/components/utils/timerformat";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 
-const MoveInSchedulerUI = () => {
+const SchedulerUI = () => {
+  const { type } = useLocalSearchParams();
   const [info, setInfo] = useState({
     collectionDate: null,
     collectionTime: null,
@@ -16,6 +17,7 @@ const MoveInSchedulerUI = () => {
     deliveryDate: null,
     deliveryTime: null,
     deliverAddress: null,
+    serviceType: type,
   });
   const [deliveryDateModalVisible, setDeliveryDateModalVisible] =
     React.useState(false);
@@ -48,7 +50,11 @@ const MoveInSchedulerUI = () => {
       <View className={"h-[120vh]"}>
         <View className={"flex flex-col m-3"}>
           <Text className={"font-RobotoBold text-2xl mt-2"}>
-            Schedule <Text className={"text-secondary"}>Moving In</Text> Service
+            Schedule{" "}
+            <Text className={"text-secondary"}>
+              Moving {type === "MoveIn" ? "In" : "Out"}
+            </Text>{" "}
+            Service
           </Text>
 
           <Text className={"font-RobotoMedium text-lg mt-4 underline"}>
@@ -184,7 +190,7 @@ const MoveInSchedulerUI = () => {
             <BaseButton
               title="Schedule"
               width="70%"
-              link={"/customer/schedule/moveinsuccess"}
+              link={"/customer/schedule/schedulesuccess"}
             />
           </View>
           <View
@@ -203,4 +209,4 @@ const MoveInSchedulerUI = () => {
   );
 };
 
-export default MoveInSchedulerUI;
+export default SchedulerUI;

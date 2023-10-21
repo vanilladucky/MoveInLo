@@ -2,8 +2,13 @@ import React from "react";
 import LandingIcon from "@src/assets/splash/LandingLogo.png";
 import BaseButton from "@src/components/utils/button";
 import { View, Text, Image } from "react-native";
+import { router } from "expo-router";
 
 const SchedulingOptionsUI = () => {
+  const routeHandler = (type) => {
+    router.push({ pathname: `/customer/schedule/scheduler`, params: { type } });
+  };
+
   return (
     <View
       style={{
@@ -54,7 +59,7 @@ const SchedulingOptionsUI = () => {
               borderRadius: 7,
             }}
             title="Move In"
-            link="/customer/schedule/movein"
+            onPress={() => routeHandler("MoveIn")}
           />
           <BaseButton
             style={{
@@ -65,7 +70,7 @@ const SchedulingOptionsUI = () => {
               borderRadius: 7,
             }}
             title="Move Out"
-            link="/customer/home"
+            onPress={() => routeHandler("MoveOut")}
           />
         </View>
       </View>

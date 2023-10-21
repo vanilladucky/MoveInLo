@@ -6,8 +6,8 @@ export default function StackLayout() {
   return (
     <Header>
       <Stack.Screen name={"options"} />
-      <Stack.Screen name={"movein"} />
-      <Stack.Screen name={"moveinsuccess"} />
+      <Stack.Screen name={"scheduler"} />
+      <Stack.Screen name={"schedulesuccess"} />
     </Header>
   );
 }

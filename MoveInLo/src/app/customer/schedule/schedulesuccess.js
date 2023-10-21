@@ -4,7 +4,7 @@ import BaseButton from "@src/components/utils/button";
 import SuccessIcon from "@src/assets/splash/SuccessTickIcon.png";
 import { router } from "expo-router";
 
-const moveinsuccess = () => {
+const ScheduleSuccessUI = () => {
   const submitHandler = () => {
     // Use replace to reset the route when switching back to index
     router.replace("/");
@@ -78,4 +78,4 @@ const moveinsuccess = () => {
   );
 };
 
-export default moveinsuccess;
+export default ScheduleSuccessUI;
