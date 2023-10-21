@@ -6,7 +6,7 @@ const Header = ({ children, signOut, ...props }) => {
   const SignOutButton = () => {
     const signOutHandler = () => {
       // Need to check if it throws error
-      router.replace("/index");
+      router.replace("/scheduled");
       router.push("/auth");
     };
     return signOut ? (

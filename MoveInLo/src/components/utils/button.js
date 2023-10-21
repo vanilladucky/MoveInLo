@@ -7,6 +7,7 @@ import { styled } from "nativewind";
 const BaseButton = ({
   title,
   primary,
+  secondary,
   width,
   height,
   link,
@@ -31,13 +32,17 @@ const BaseButton = ({
       style={{
         width: width ?? 105,
         height: height ?? 38,
-        backgroundColor: primary ? theme.primary : theme.white,
+        backgroundColor: primary
+          ? theme.primary
+          : secondary
+          ? theme.secondary
+          : theme.white,
       }}
     >
       <Text
         className="font-RobotoBlack text-base"
         style={{
-          color: primary ? theme.white : theme.primary,
+          color: primary || secondary ? theme.white : theme.primary,
           fontSize: textSize ?? 15,
         }}
       >

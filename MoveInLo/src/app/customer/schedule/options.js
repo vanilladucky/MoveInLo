@@ -51,6 +51,7 @@ const SchedulingOptionsUI = () => {
           style={{ justifyContent: "space-evenly", marginTop: 13 }}
         >
           <BaseButton
+            primary
             style={{
               backgroundColor: "#181C62",
               padding: 8,
