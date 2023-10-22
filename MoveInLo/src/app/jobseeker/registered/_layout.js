@@ -4,8 +4,9 @@ import { Stack } from "expo-router";
 const StackLayout = () => {
   return (
     <Header signOut>
-      <Stack.Screen name={"progress"} />
-      <Stack.Screen name={"payment"} />
+      <Stack.Screen name={"jobs"} />
+      <Stack.Screen name={"register"} />
+      <Stack.Screen name={"withdrawal"} />
     </Header>
   );
 };

@@ -27,7 +27,7 @@ export default function TabLayout() {
         options={{
           title: "Schedule",
           tabBarIcon: scheduleIcon,
-          href: "/customer/schedule/options",
+          href: "/customer/allocation/options",
         }}
       />
       <Tabs.Screen

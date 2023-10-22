@@ -2,12 +2,12 @@ import { router, Stack } from "expo-router";
 import BaseButton from "@src/components/utils/button";
 import React from "react";
 
-const Header = ({ children, signOut, ...props }) => {
+const Header = ({ children, signOut, hideHeader, ...props }) => {
   const SignOutButton = () => {
     const signOutHandler = () => {
       // Need to check if it throws error
-      router.replace("/scheduled");
-      router.push("/auth");
+      // router.replace("/");
+      router.push("auth/login");
     };
     return signOut ? (
       <BaseButton
@@ -29,6 +29,7 @@ const Header = ({ children, signOut, ...props }) => {
         headerTitleStyle: {
           fontFamily: "RobotoBold",
         },
+        headerShown: !hideHeader ?? true,
 
         // Header Back Button
         headerBackTitle: "Back",

@@ -4,7 +4,8 @@ import { Text } from "react-native";
 
 export default function TabLayout() {
   const homeIcon = () => <Text>🏠</Text>;
-  const scheduleIcon = () => <Text>📆</Text>;
+  const listingsIcon = () => <Text>📦</Text>;
+  const registeredIcon = () => <Text>📆</Text>;
   const trackerIcon = () => <Text>⏳</Text>;
 
   return (
@@ -15,10 +16,17 @@ export default function TabLayout() {
         options={{ title: "Home", tabBarIcon: homeIcon }}
       />
       <Tabs.Screen
-        name="schedule"
+        name="joblistings"
         options={{
-          title: "Schedule",
-          tabBarIcon: scheduleIcon,
+          title: "Listings",
+          tabBarIcon: listingsIcon,
+        }}
+      />
+      <Tabs.Screen
+        name="registered"
+        options={{
+          title: "Registered",
+          tabBarIcon: registeredIcon,
         }}
       />
       <Tabs.Screen
@@ -26,6 +34,7 @@ export default function TabLayout() {
         options={{
           title: "Tracker",
           tabBarIcon: trackerIcon,
+          href: "jobseeker/tracker/progress",
         }}
       />
     </Tabs>

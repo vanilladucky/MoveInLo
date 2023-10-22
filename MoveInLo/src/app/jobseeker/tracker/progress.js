@@ -4,9 +4,11 @@ import { SERVICE_STATUS } from "@src/components/enum/servicestatus";
 import BaseButton from "@src/components/utils/button";
 import LandingIcon from "@src/assets/splash/LandingLogo.png";
 import TextDisplay from "@src/components/utils/textdisplay";
+import { router } from "expo-router";
 
-const ScheduledTrackerUI = () => {
+const JobSeekerTrackerUI = () => {
   const [serviceInfo, setServiceInfo] = useState({
+    id: "1",
     collectionDate: "28 Dec 2023",
     collectionTime: "12:30 AM",
     collectionAddress: "test",
@@ -20,6 +22,27 @@ const ScheduledTrackerUI = () => {
     contact: "12345678",
   });
   const [serviceStatus, setServiceStatus] = useState(SERVICE_STATUS.PENDING);
+
+  const updateCheckIn = () => {
+    // TODO: Update database to Progress status
+    setServiceStatus(SERVICE_STATUS.PROGRESS);
+  };
+  const updateWithdraw = () => {
+    router.replace("/");
+    router.push({
+      pathname: "jobseeker/registered/withdrawal/request",
+      params: { id: serviceInfo.id },
+    });
+  };
+
+  const updateCompleted = () => {
+    // TODO: Update database to Completed status
+    setServiceStatus(SERVICE_STATUS.DELIVERED);
+  };
+
+  const updatePayment = () => {
+    router.push("jobseeker/tracker/payment");
+  };
 
   return (
     <ScrollView className={"flex flex-column m-6"}>
@@ -133,27 +156,88 @@ const ScheduledTrackerUI = () => {
           />
         </View>
 
-        <View
-          className={"flex flex-row"}
-          style={{ justifyContent: "center", borderWidth: 2, margin: 10 }}
-        >
-          <Image source={LandingIcon} />
-        </View>
+        {/* GOOGLE STATIC MAP */}
+        {serviceStatus === SERVICE_STATUS.DELIVERED ? (
+          <View
+            className={
+              "mt-4 flex flex-col item-center justify-center border-2 border-primary p-5 rounded-xl"
+            }
+          >
+            <Text className={"font-RobotoBold text-center text-lg"}>
+              Thank you for your service!{" "}
+            </Text>
+            <Text className={"font-RobotoRegular text-center mt-2"}>
+              Our team will contact you regarding the payment.
+            </Text>
+            <Text className={"font-RobotoRegular text-center"}>
+              Do indicate here once you have received the payment
+            </Text>
+          </View>
+        ) : (
+          <View
+            className={"flex flex-row"}
+            style={{ justifyContent: "center", borderWidth: 2, margin: 10 }}
+          >
+            <Image source={LandingIcon} />
+          </View>
+        )}
 
-        <View
-          className={"flex flex-row"}
-          style={{ justifyContent: "center", margin: 20 }}
-        >
-          <BaseButton
-            secondary
-            width="60%"
-            title="Cancel Service"
-            link="customer/tracker/cancel"
-          />
-        </View>
+        {/* DYNAMIC BUTTONS */}
+        {serviceStatus === SERVICE_STATUS.PENDING ? (
+          <View
+            className={
+              "flex flex-row space-x-4 items-center justify-center mt-4"
+            }
+          >
+            <View>
+              <BaseButton
+                primary
+                width={140}
+                title="Check In"
+                onPress={() => updateCheckIn()}
+              />
+            </View>
+            <View>
+              <BaseButton
+                secondary
+                width={140}
+                title="Withdraw"
+                onPress={() => updateWithdraw()}
+              />
+            </View>
+          </View>
+        ) : serviceStatus === SERVICE_STATUS.PROGRESS ? (
+          <View
+            className={
+              "flex flex-row space-x-4 items-center justify-center mt-4"
+            }
+          >
+            <View>
+              <BaseButton
+                primary
+                width={180}
+                title="Completed"
+                onPress={() => updateCompleted()}
+              />
+            </View>
+          </View>
+        ) : (
+          <View
+            className={
+              "flex flex-row space-x-4 items-center justify-center mt-4"
+            }
+          >
+            <BaseButton
+              primary
+              width={180}
+              title="Payment Received"
+              onPress={() => updatePayment()}
+            />
+          </View>
+        )}
       </View>
     </ScrollView>
   );
 };
 
-export default ScheduledTrackerUI;
+export default JobSeekerTrackerUI;

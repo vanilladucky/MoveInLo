@@ -1,5 +1,5 @@
 export const SERVICE_STATUS = {
-  SCHEDULED: "Scheduled",
+  PENDING: "Pending",
   PROGRESS: "In Progress",
   DELIVERED: "Delivered",
 };

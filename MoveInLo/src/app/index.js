@@ -25,7 +25,7 @@ const App = () => {
           </Text>
         </View>
         <View className={"items-center"}>
-          <BaseButton title="Begin" link="/auth" />
+          <BaseButton title="Begin" link="auth" />
         </View>
       </Screen>
     </SafeAreaProvider>

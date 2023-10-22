@@ -190,7 +190,7 @@ const SchedulerUI = () => {
             <BaseButton
               title="Schedule"
               width="70%"
-              link={"/customer/schedule/schedulesuccess"}
+              link={"/customer/allocation/schedulesuccess"}
             />
           </View>
           <View

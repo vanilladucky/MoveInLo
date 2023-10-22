@@ -6,7 +6,10 @@ const BaseCard = ({ title, index, description, source }) => {
   return (
     <View className={"flex flex-row mx-5 my-3 pb-2 border-b-[1px] border-gray"}>
       <View className={"items-center justify-center mx-3"}>
-        <Image source={source} style={{ height: size, width: size }} />
+        <Image
+          source={source}
+          style={{ height: size, width: size, borderRadius: 10 }}
+        />
       </View>
       <View className={"flex flex-col ml-4 w-4/6"}>
         <View>
