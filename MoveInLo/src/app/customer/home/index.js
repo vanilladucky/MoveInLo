@@ -81,7 +81,7 @@ const CustomerHomeUI = () => {
         <BaseButton
           primary
           title={"Schedule"}
-          link={"/customer/allocation/options"}
+          link={"/customer/schedule/options"}
         />
       </View>
     </ScrollView>
