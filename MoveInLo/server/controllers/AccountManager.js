@@ -64,6 +64,8 @@ const loginAccount = async (req, res) => {
       type,
     });
 
+    console.log("Found Account");
+
     if (authenticatedAccount === null) {
       return res
         .status(400)

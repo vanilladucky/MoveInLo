@@ -12,10 +12,14 @@ const postLoginAccount = async (req) => {
     .then((res) => {
       return res.json();
     })
+    .catch((error) => {
+      throw error;
+    })
     .then((json) => {
       return json;
     })
     .catch((error) => {
+      console.log("Error when fetching POST Login");
       throw error;
     });
 };

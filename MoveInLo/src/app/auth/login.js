@@ -43,7 +43,6 @@ const LoginUI = () => {
   };
 
   const isValidInput = () => {
-    // TODO: Insert backend logic
     const validType = accountInfo.type !== "";
     const validUsername = accountInfo.username !== "";
     const validPassword = accountInfo.password !== "";
@@ -57,15 +56,20 @@ const LoginUI = () => {
     invalidHandler(!accountInfo.type, "type");
 
     if (isValidInput()) {
-      await postLoginAccount(accountInfo).then((json) => {
-        const validResponse = json !== null ? !!json.success : false;
-        if (validResponse) {
-          router.push("/customer/home");
-        } else {
-          setErrorMessage(json.body);
-          setShowAlert(true);
-        }
-      });
+      try {
+        await postLoginAccount(accountInfo).then((json) => {
+          console.log("Calling API to login");
+          const validResponse = json !== null ? !!json.success : false;
+          if (validResponse) {
+            router.push("/customer/home");
+          } else {
+            setErrorMessage(json.body);
+            setShowAlert(true);
+          }
+        });
+      } catch (e) {
+        setErrorMessage("Error calling API Endpoint!");
+      }
     } else {
       setShowAlert(true);
     }
