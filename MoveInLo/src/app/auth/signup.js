@@ -12,6 +12,8 @@ import BaseButton from "@src/components/utils/button";
 import BaseInput from "@src/components/utils/inputbox";
 import ErrorAlert from "@src/components/utils/erroralert";
 import postNewAccount from "@src/api/auth/postNewAccount";
+import { ACCOUNT_TYPE } from "@server/enum/AccountType";
+import * as SecureStore from "expo-secure-store";
 
 const SignUpUI = () => {
   const [newAccountInfo, setNewAccountInfo] = useState({
@@ -47,7 +49,6 @@ const SignUpUI = () => {
   };
 
   const validationHandler = (field) => {
-    // TODO: Insert backend logic
     const validEmail =
       newAccountInfo.email !== "" &&
       newAccountInfo.email.includes("@") &&
@@ -105,19 +106,28 @@ const SignUpUI = () => {
 
   const submitHandler = async () => {
     if (isValidInput()) {
-      await postNewAccount(newAccountInfo).then((json) => {
-        const validResponse = json !== null ? !!json.success : false;
-        if (validResponse) {
-          console.log(json);
-          router.push({
-            pathname: "/auth/pdpa",
-            params: { type: json.body.type },
-          });
-        } else {
-          setErrorMessage(json.body);
-          setShowAlert(true);
-        }
-      });
+      try {
+        await postNewAccount(newAccountInfo).then(async (json) => {
+          const validResponse = json !== null ? !!json.success : false;
+          if (validResponse) {
+            try {
+              await SecureStore.setItemAsync("accountId", json.body._id);
+
+              router.push({
+                pathname: "/auth/pdpa",
+                params: { type: json.body.type },
+              });
+            } catch (e) {
+              setErrorMessage("Failed to set User session");
+            }
+          } else {
+            setErrorMessage(json.body);
+            setShowAlert(true);
+          }
+        });
+      } catch (e) {
+        setErrorMessage("Error calling API Endpoint!");
+      }
     } else {
       setShowAlert(true);
     }
@@ -200,8 +210,11 @@ const SignUpUI = () => {
                   endIcon: <CheckIcon size="3" />,
                 }}
               >
-                <Select.Item label={"Customer"} value={"Customer"} />
-                <Select.Item label={"Job Seeker"} value={"JobSeeker"} />
+                <Select.Item label={"Customer"} value={ACCOUNT_TYPE.CUSTOMER} />
+                <Select.Item
+                  label={"Job Seeker"}
+                  value={ACCOUNT_TYPE.JOBSEEKER}
+                />
               </Select>
             </FormControl>
             {showAlert && !invalidInput.type && (

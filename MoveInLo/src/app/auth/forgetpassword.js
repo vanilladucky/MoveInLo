@@ -17,6 +17,7 @@ import BaseInput from "@src/components/utils/inputbox";
 import BaseButton from "@src/components/utils/button";
 import getAccount from "@src/api/auth/getAccount";
 import postNewPassword from "@src/api/auth/postNewPassword";
+import { ACCOUNT_TYPE } from "@server/enum/AccountType";
 
 const ForgetPasswordUI = () => {
   const [accountInfo, setAccountInfo] = useState({
@@ -179,8 +180,8 @@ const ForgetPasswordUI = () => {
               endIcon: <CheckIcon size="3" />,
             }}
           >
-            <Select.Item label={"Customer"} value={"Customer"} />
-            <Select.Item label={"Job Seeker"} value={"JobSeeker"} />
+            <Select.Item label={"Customer"} value={ACCOUNT_TYPE.CUSTOMER} />
+            <Select.Item label={"Job Seeker"} value={ACCOUNT_TYPE.JOBSEEKER} />
           </Select>
         </FormControl>
         <Box

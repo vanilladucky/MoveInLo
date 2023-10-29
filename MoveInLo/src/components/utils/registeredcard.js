@@ -3,12 +3,29 @@ import React from "react";
 import BaseButton from "@src/components/utils/button";
 import { router } from "expo-router";
 
-const BaseRegisteredCard = ({ title, description, source, id }) => {
+const BaseRegisteredCard = ({
+  title,
+  description,
+  source,
+  accountId,
+  serviceId,
+  jobId,
+}) => {
   const size = 75;
 
   const detailsHandler = () => {
     router.replace("/");
-    router.push({ pathname: "jobseeker/tracker/", params: { id } });
+    router.push({
+      pathname: "jobseeker/registered/tracker/progress",
+      params: { accountId, jobId, serviceId },
+    });
+  };
+
+  const withdrawHandler = () => {
+    router.push({
+      pathname: "jobseeker/registered/withdrawal/request",
+      params: { accountId, jobId },
+    });
   };
 
   return (
@@ -38,7 +55,7 @@ const BaseRegisteredCard = ({ title, description, source, id }) => {
             <BaseButton
               secondary
               title={"Withdraw"}
-              link={"jobseeker/registered/withdrawal/request"}
+              onPress={() => withdrawHandler()}
             />
           </View>
           <View>

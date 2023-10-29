@@ -1,6 +1,7 @@
 import { Image, Pressable, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import { ACCOUNT_TYPE } from "@server/enum/AccountType";
 import {
   Box,
   CheckIcon,
@@ -13,6 +14,7 @@ import BaseButton from "@src/components/utils/button";
 import loginIcon from "@src/assets/splash/LandingLogo.png";
 import ErrorAlert from "@src/components/utils/erroralert";
 import postLoginAccount from "@src/api/auth/postLoginAccount";
+import * as SecureStore from "expo-secure-store";
 
 const LoginUI = () => {
   const [accountInfo, setAccountInfo] = useState({
@@ -57,11 +59,21 @@ const LoginUI = () => {
 
     if (isValidInput()) {
       try {
-        await postLoginAccount(accountInfo).then((json) => {
+        await postLoginAccount(accountInfo).then(async (json) => {
           console.log("Calling API to login");
           const validResponse = json !== null ? !!json.success : false;
           if (validResponse) {
-            router.push("/customer/home");
+            try {
+              await SecureStore.setItemAsync("accountId", json.body._id);
+              // console.log(await SecureStore.getItemAsync("account"));
+              router.push(
+                json.body.type === ACCOUNT_TYPE.CUSTOMER
+                  ? "/customer/home"
+                  : "/jobseeker/home"
+              );
+            } catch (e) {
+              setErrorMessage("Failed to set User session");
+            }
           } else {
             setErrorMessage(json.body);
             setShowAlert(true);
@@ -127,8 +139,8 @@ const LoginUI = () => {
               endIcon: <CheckIcon size="3" />,
             }}
           >
-            <Select.Item label={"Customer"} value={"Customer"} />
-            <Select.Item label={"Job Seeker"} value={"JobSeeker"} />
+            <Select.Item label={"Customer"} value={ACCOUNT_TYPE.CUSTOMER} />
+            <Select.Item label={"Job Seeker"} value={ACCOUNT_TYPE.JOBSEEKER} />
           </Select>
         </FormControl>
         <Box

@@ -1,22 +1,57 @@
-import { Text, View, Image, StyleSheet, Pressable } from "react-native";
+import React, { useState } from "react";
+import { Modal } from "native-base";
+import { Screen } from "react-native-screens";
+import { Text, View, Image } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import QuestionIcon from "@src/assets/splash/QuestionIcon.png";
-import { Screen } from "react-native-screens";
 import BaseButton from "@src/components/utils/button";
+import postWithdrawJob from "@src/api/job/postWithdrawJob";
+import ErrorAlert from "@src/components/utils/erroralert";
 
 const router = useRouter();
 
 const JobWithdrawalRequestUI = () => {
-  const { id } = useLocalSearchParams();
+  const [showAlert, setShowAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const { accountId, jobId } = useLocalSearchParams();
 
-  const withdrawHandler = () => {
-    // TODO: Update database to WITHDRAWN status
-    console.log(id);
-    router.push("jobseeker/registered/withdrawal/success");
+  const withdrawHandler = async () => {
+    try {
+      await postWithdrawJob({ accountId, jobId }).then((json) => {
+        const validResponse = json !== null ? !!json.success : false;
+        if (validResponse) {
+          router.push("jobseeker/registered/withdrawal/success");
+        } else {
+          setErrorMessage(json.body);
+          setShowAlert(true);
+        }
+      });
+    } catch (e) {
+      setErrorMessage("Error fetching info to cancel service.");
+      setShowAlert(true);
+    }
+  };
+
+  const resetHandler = () => {
+    setShowAlert(false);
   };
 
   return (
     <View>
+      {showAlert && (
+        <Modal isOpen={showAlert} onClose={() => resetHandler()}>
+          <Modal.Content className={"bg-transparent"}>
+            <Modal.Body>
+              <ErrorAlert
+                title={"Please try again!"}
+                message={errorMessage ?? "Failed to cancel service"}
+                onPress={() => resetHandler()}
+                shown={showAlert}
+              />
+            </Modal.Body>
+          </Modal.Content>
+        </Modal>
+      )}
       <Screen
         className={`flex flex-col h-full w-full items-center justify-center`}
         style={{ top: 17 }}

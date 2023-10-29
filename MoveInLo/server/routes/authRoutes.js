@@ -8,6 +8,8 @@ const router = express.Router();
 
 router.get("/auth/get", accountManagerController.getAccount);
 
+router.get("/auth/account/:id", accountManagerController.getAccountInfo);
+
 router.post("/auth/signup", accountManagerController.createAccount);
 
 router.post("/auth/update/:id", accountManagerController.updatePassword);

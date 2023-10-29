@@ -7,6 +7,11 @@
     "plugins": [
       "expo-router"
     ],
+    "ios": {
+      "config": {
+        "usesNonExemptEncryption": false
+      }
+    },
     "icon": "./src/assets/splash/LandingLogo.png",
     "name": "MoveInLo",
     "slug": "MoveInLo",

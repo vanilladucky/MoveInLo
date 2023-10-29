@@ -1,6 +1,29 @@
 // Convert id from string to ObjectId for the _id.
 // const { ObjectId: accountId } = require("mongodb");
-const Account = require("../models/account");
+const Account = require("../models/AccountModel");
+
+const getAccountInfo = async (req, res) => {
+  try {
+    console.log("Attempting to fetch account info...");
+    const { id } = req.params;
+
+    const getAccountInfo = await Account.findOne(
+      { _id: id },
+      { username: true, type: true, number: true }
+    );
+
+    if (!getAccountInfo) {
+      return res
+        .status(400)
+        .json({ success: false, body: "Invalid Account found." });
+    }
+
+    console.log("Successfully obtained account info.");
+    return res.status(200).json({ success: true, body: getAccountInfo });
+  } catch (e) {
+    return res.status(500).json({ success: false, body: e.message });
+  }
+};
 
 const getAccount = async (req, res) => {
   try {
@@ -66,7 +89,7 @@ const loginAccount = async (req, res) => {
 
     console.log("Found Account");
 
-    if (authenticatedAccount === null) {
+    if (!authenticatedAccount) {
       return res
         .status(400)
         .json({ success: false, body: "Invalid username and/or type." });
@@ -76,10 +99,12 @@ const loginAccount = async (req, res) => {
       return res
         .status(400)
         .json({ success: false, body: "Invalid password." });
+    } else {
+      console.log("Successfully login.");
+      return res
+        .status(200)
+        .json({ success: true, body: authenticatedAccount });
     }
-
-    console.log("Successfully login.");
-    return res.status(200).json({ success: true, body: authenticatedAccount });
   } catch (error) {
     return res.status(500).json({ success: false, body: error.message });
   }
@@ -109,4 +134,10 @@ const updatePassword = async (req, res) => {
   }
 };
 
-module.exports = { getAccount, createAccount, updatePassword, loginAccount };
+module.exports = {
+  getAccount,
+  getAccountInfo,
+  createAccount,
+  updatePassword,
+  loginAccount,
+};

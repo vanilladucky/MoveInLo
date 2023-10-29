@@ -6,7 +6,6 @@ export default function TabLayout() {
   const homeIcon = () => <Text>🏠</Text>;
   const listingsIcon = () => <Text>📦</Text>;
   const registeredIcon = () => <Text>📆</Text>;
-  const trackerIcon = () => <Text>⏳</Text>;
 
   return (
     <Tabs screenOptions={{ headerShown: false }}>
@@ -27,14 +26,7 @@ export default function TabLayout() {
         options={{
           title: "Registered",
           tabBarIcon: registeredIcon,
-        }}
-      />
-      <Tabs.Screen
-        name="tracker"
-        options={{
-          title: "Tracker",
-          tabBarIcon: trackerIcon,
-          href: "jobseeker/tracker/progress",
+          href: "jobseeker/registered/jobs",
         }}
       />
     </Tabs>

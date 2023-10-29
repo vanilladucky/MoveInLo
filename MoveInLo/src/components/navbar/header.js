@@ -1,12 +1,23 @@
 import { router, Stack } from "expo-router";
-import BaseButton from "@src/components/utils/button";
 import React from "react";
+import BaseButton from "@src/components/utils/button";
+import * as SecureStore from "expo-secure-store";
 
 const Header = ({ children, signOut, hideHeader, ...props }) => {
   const SignOutButton = () => {
-    const signOutHandler = () => {
+    const signOutHandler = async () => {
       // Need to check if it throws error
       // router.replace("/");
+      try {
+        await Promise.all([
+          SecureStore.setItemAsync("accountId", "null"),
+          SecureStore.setItemAsync("serviceId", "null"),
+          SecureStore.setItemAsync("jobId", "null"),
+        ]);
+      } catch (e) {
+        console.log("Error in signing out.");
+      }
+
       router.push("auth/login");
     };
     return signOut ? (

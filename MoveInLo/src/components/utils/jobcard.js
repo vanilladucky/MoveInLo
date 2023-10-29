@@ -3,11 +3,14 @@ import React from "react";
 import BaseButton from "@src/components/utils/button";
 import { router } from "expo-router";
 
-const BaseJobCard = ({ title, description, source, id }) => {
+const BaseJobCard = ({ title, description, source, listingInfo }) => {
   const size = 75;
 
   const registerHandler = () => {
-    router.push({ pathname: "/jobseeker/joblistings/details", params: { id } });
+    router.push({
+      pathname: "/jobseeker/joblistings/details",
+      params: listingInfo,
+    });
   };
 
   return (

@@ -1,51 +1,130 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, View, Image, ScrollView } from "react-native";
-import { SERVICE_STATUS } from "@src/components/enum/servicestatus";
+import { router, useLocalSearchParams } from "expo-router";
+import { Modal } from "native-base";
+import { SERVICE_STATUS } from "@server/enum/ServiceStatus";
 import BaseButton from "@src/components/utils/button";
 import LandingIcon from "@src/assets/splash/LandingLogo.png";
 import TextDisplay from "@src/components/utils/textdisplay";
-import { router } from "expo-router";
+import ErrorAlert from "@src/components/utils/erroralert";
+import getServiceInfo from "@src/api/service/getServiceInfo";
+import getUserInfo from "@src/api/auth/getUserInfo";
+import getJobProgress from "@src/api/progress/getJobProgress";
+import putUpdateCollection from "@src/api/progress/putUpdateCollection";
+import putUpdateDelivered from "@src/api/progress/putUpdateDelivered";
+import putUpdatePaid from "@src/api/progress/putUpdatePaid";
 
 const JobSeekerTrackerUI = () => {
-  const [serviceInfo, setServiceInfo] = useState({
-    id: "1",
-    collectionDate: "28 Dec 2023",
-    collectionTime: "12:30 AM",
-    collectionAddress: "test",
-    deliveryDate: "30 Dec 2023",
-    deliveryTime: "12:30 AM",
-    deliverAddress: "test",
-    serviceType: "Move In",
-  });
-  const [personnelInfo, setPersonnelInfo] = useState({
-    name: "Barry Alan",
-    contact: "12345678",
-  });
+  const [showAlert, setShowAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const { accountId, serviceId, jobId } = useLocalSearchParams();
+
+  const [jobInfo, setJobInfo] = useState({});
+  const [personnelInfo, setPersonnelInfo] = useState({});
   const [serviceStatus, setServiceStatus] = useState(SERVICE_STATUS.PENDING);
 
-  const updateCheckIn = () => {
-    // TODO: Update database to Progress status
-    setServiceStatus(SERVICE_STATUS.PROGRESS);
+  const fetchAllData = async () => {
+    try {
+      Promise.all([
+        getServiceInfo(serviceId),
+        getUserInfo(accountId),
+        getJobProgress(jobId),
+      ])
+        .then(([serviceData, userData, jobData]) => {
+          setJobInfo(serviceData.body.serviceInfo[0]);
+          setPersonnelInfo(userData.body);
+          setServiceStatus(jobData.body.progress[0]);
+        })
+        .catch((error) => {
+          console.log(error);
+          setErrorMessage("Error retrieving progress information.");
+          setShowAlert(true);
+        });
+    } catch (e) {
+      setErrorMessage("Error retrieving data.");
+      setShowAlert(true);
+    }
   };
+
+  useEffect(() => {
+    fetchAllData();
+  }, []);
+
+  const resetHandler = () => {
+    setShowAlert(false);
+  };
+
+  const updateCheckIn = async () => {
+    try {
+      const json = await putUpdateCollection({ jobId });
+      const validResponse = json !== null ? !!json.success : false;
+      if (validResponse) {
+        const newStatus = await getJobProgress(jobId);
+        setServiceStatus(newStatus);
+      }
+    } catch (e) {
+      setErrorMessage("Error when checking in.");
+      setShowAlert(true);
+    }
+  };
+
   const updateWithdraw = () => {
     router.replace("/");
     router.push({
       pathname: "jobseeker/registered/withdrawal/request",
-      params: { id: serviceInfo.id },
+      params: { accountId, jobId },
     });
   };
 
-  const updateCompleted = () => {
-    // TODO: Update database to Completed status
-    setServiceStatus(SERVICE_STATUS.DELIVERED);
+  const updateCompleted = async () => {
+    try {
+      const json = await putUpdateDelivered({ jobId });
+      const validResponse = json !== null ? !!json.success : false;
+      if (validResponse) {
+        // TODO: CHECK WHY ITS NOT WORKING!!!
+        const newStatus = await getJobProgress(jobId);
+        if (newStatus) {
+          setServiceStatus(newStatus);
+        }
+      }
+    } catch (e) {
+      setErrorMessage("Error when updating completion.");
+      setShowAlert(true);
+    }
   };
 
-  const updatePayment = () => {
-    router.push("jobseeker/tracker/payment");
+  const updatePayment = async () => {
+    try {
+      const json = await putUpdatePaid({ jobId });
+      const validResponse = json !== null ? !!json.success : false;
+      if (validResponse) {
+        router.push("jobseeker/registered/tracker/payment");
+      } else {
+        setErrorMessage("Did not update to paid.");
+        setShowAlert(true);
+      }
+    } catch (e) {
+      setErrorMessage("Error when updating payment.");
+      setShowAlert(true);
+    }
   };
 
   return (
     <ScrollView className={"flex flex-column m-6"}>
+      {showAlert && (
+        <Modal isOpen={showAlert} onClose={() => resetHandler()}>
+          <Modal.Content className={"bg-transparent"}>
+            <Modal.Body>
+              <ErrorAlert
+                title={"Please try again!"}
+                message={errorMessage ?? "Failed to cancel service"}
+                onPress={() => resetHandler()}
+                shown={showAlert}
+              />
+            </Modal.Body>
+          </Modal.Content>
+        </Modal>
+      )}
       <View className={"mt-4"}>
         <Text className={"font-RobotoBold text-2xl"}>Progress Tracker</Text>
 
@@ -121,16 +200,14 @@ const JobSeekerTrackerUI = () => {
           </Text>
           <TextDisplay
             title={"Collection"}
-            content={
-              serviceInfo.collectionDate + ", " + serviceInfo.collectionTime
-            }
+            content={jobInfo.collectionDate + ", " + jobInfo.collectionTime}
           />
           <TextDisplay
             title={"Delivery"}
-            content={serviceInfo.deliveryDate + ", " + serviceInfo.deliveryTime}
+            content={jobInfo.deliveryDate + ", " + jobInfo.deliveryTime}
           />
 
-          <TextDisplay title={"Service"} content={serviceInfo.serviceType} />
+          <TextDisplay title={"Service"} content={jobInfo.serviceType} />
         </View>
 
         <View
@@ -147,12 +224,12 @@ const JobSeekerTrackerUI = () => {
           }}
         >
           <Text style={{ fontWeight: "bold", marginBottom: 10 }}>
-            Delivery Personnel
+            Intended Recipient
           </Text>
-          <TextDisplay title={"Name"} content={personnelInfo.name} />
+          <TextDisplay title={"Name"} content={personnelInfo.username} />
           <TextDisplay
             title={"Contact number"}
-            content={personnelInfo.contact}
+            content={personnelInfo.number}
           />
         </View>
 

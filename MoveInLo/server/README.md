@@ -57,7 +57,7 @@ const loginAccount = async (req, res) => {
 
     const { username, password, type } = req.body;
 
-    const authenticatedAccount = await Account.findOne({
+    const authenticatedAccount = await AccountModel.findOne({
       username,
       type,
     });

@@ -4,13 +4,15 @@ import { Checkbox, FlatList, HStack } from "native-base";
 import { useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import ErrorAlert from "@src/components/utils/erroralert";
+import { ACCOUNT_TYPE } from "@server/enum/AccountType";
 
 const PDPAUI = () => {
   const [acknowledged, setAcknowledged] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const router = useRouter();
   const { type } = useLocalSearchParams();
-  const redirectLink = type === "Customer" ? "customer/home" : "jobseeker/home";
+  const redirectLink =
+    type === ACCOUNT_TYPE.CUSTOMER ? "customer/home" : "jobseeker/home";
 
   const acknowledgementHandler = () => {
     if (acknowledged) {

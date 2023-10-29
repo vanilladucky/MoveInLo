@@ -3,7 +3,7 @@ import { Stack } from "expo-router";
 
 const StackLayout = () => {
   return (
-    <Header signOut>
+    <Header hideHeader>
       <Stack.Screen name={"progress"} />
       <Stack.Screen name={"payment"} />
     </Header>
