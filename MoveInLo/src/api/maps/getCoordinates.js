@@ -1,14 +1,13 @@
 import { localhost } from "@src/components/root";
 
-const postLoginAccount = async (req) => {
-  console.log(localhost);
-  return fetch(`${localhost}/api/auth/login`, {
+const getCoordinates = async (info) => {
+  return fetch(`${localhost}/api/maps/coordinates`, {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(req),
+    body: JSON.stringify(info),
   })
     .then((res) => {
       return res.json();
@@ -20,8 +19,7 @@ const postLoginAccount = async (req) => {
       return json;
     })
     .catch((error) => {
-      console.log("Error when fetching POST Login");
       throw error;
     });
 };
-export default postLoginAccount;
+export default getCoordinates;

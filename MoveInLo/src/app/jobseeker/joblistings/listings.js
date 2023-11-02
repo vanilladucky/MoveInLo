@@ -2,16 +2,17 @@ import { Text, View } from "react-native";
 import HouseIcon from "@src/assets/splash/House.png";
 import { Modal, ScrollView } from "native-base";
 import BaseJobCard from "@src/components/utils/jobcard";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ErrorAlert from "@src/components/utils/erroralert";
 import getJobListings from "@src/api/job/getJobListings";
-import { useNavigation } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
 
 const JobListingsUI = () => {
+  const [appIsReady, setAppIsReady] = useState(false);
+
   const [showAlert, setShowAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [jobListings, setJobListings] = useState([]);
-  const navigation = useNavigation();
 
   const fetchJobListings = async () => {
     try {
@@ -26,23 +27,37 @@ const JobListingsUI = () => {
     }
   };
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      fetchJobListings();
-    });
-
-    return () => {
-      unsubscribe(); // Cleanup when the component is unmounted
-    };
-  }, [navigation]);
-
   const resetHandler = () => {
     setShowAlert(false);
   };
 
+  useEffect(() => {
+    async function prepare() {
+      try {
+        await fetchJobListings();
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        // Tell the application to render
+        setAppIsReady(true);
+      }
+    }
+    prepare();
+  }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady) {
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
+
+  if (!appIsReady) {
+    return null;
+  }
+
   return (
     <ScrollView>
-      <View className={"h-full w-full mt-2"}>
+      <View className={"h-full w-full mt-2"} onLayout={onLayoutRootView}>
         {showAlert && (
           <Modal isOpen={showAlert} onClose={() => resetHandler()}>
             <Modal.Content className={"bg-transparent"}>

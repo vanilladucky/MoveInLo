@@ -4,6 +4,7 @@ const Auth = require("./routes/authRoutes");
 const JobSeeker = require("./routes/jobRoutes");
 const ServiceScheduler = require("./routes/schedulerRoutes");
 const ProgressTracker = require("./routes/trackerRoutes");
+const GoogleMapController = require("./routes/googleMapsRoutes");
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use("/api/", Auth);
 app.use("/api/", JobSeeker);
 app.use("/api/", ServiceScheduler);
 app.use("/api/", ProgressTracker);
+app.use("/api/", GoogleMapController);
 
 app.get("/", (req, res) => {
   res.send("Server is running");

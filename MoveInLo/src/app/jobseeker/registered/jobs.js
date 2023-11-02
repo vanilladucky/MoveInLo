@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useNavigation } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
 import { Modal } from "native-base";
 import { Text, View } from "react-native";
 import House from "@src/assets/splash/House.png";
@@ -7,12 +6,13 @@ import BaseRegisteredCard from "@src/components/utils/registeredcard";
 import ErrorAlert from "@src/components/utils/erroralert";
 import getRegisteredJobListings from "@src/api/job/getRegisteredJobListings";
 import * as SecureStore from "expo-secure-store";
+import * as SplashScreen from "expo-splash-screen";
 
 const RegisteredJobsUI = () => {
+  const [appIsReady, setAppIsReady] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [registeredJobs, setRegisteredJobs] = useState([]);
-  const navigation = useNavigation();
 
   const fetchRegisteredJobListings = async () => {
     try {
@@ -28,21 +28,36 @@ const RegisteredJobsUI = () => {
     }
   };
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      fetchRegisteredJobListings();
-    });
-
-    return () => {
-      unsubscribe(); // Cleanup when the component is unmounted
-    };
-  }, [navigation]);
-
   const resetHandler = () => {
     setShowAlert(false);
   };
+
+  useEffect(() => {
+    async function prepare() {
+      try {
+        await fetchRegisteredJobListings();
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        // Tell the application to render
+        setAppIsReady(true);
+      }
+    }
+    prepare();
+  }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady) {
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
+
+  if (!appIsReady) {
+    return null;
+  }
+
   return (
-    <View>
+    <View onLayout={onLayoutRootView}>
       {showAlert && (
         <Modal isOpen={showAlert} onClose={() => resetHandler()}>
           <Modal.Content className={"bg-transparent"}>
@@ -80,7 +95,7 @@ const RegisteredJobsUI = () => {
           return (
             <BaseRegisteredCard
               key={index}
-              accountId={job.jobSeekerId}
+              accountId={job.recipientId} // Send the recipient accountId
               jobId={job.jobId}
               serviceId={job.serviceId}
               source={House}

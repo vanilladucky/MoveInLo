@@ -15,7 +15,7 @@ const fetchServiceInfo = async (req, res) => {
       }
     );
 
-    console.log(selectedService);
+    // console.log(selectedService);
 
     if (!selectedService) {
       return res

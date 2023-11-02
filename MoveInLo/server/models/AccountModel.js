@@ -12,6 +12,12 @@ const AccountSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  long: {
+    type: Number,
+  },
+  lat: {
+    type: Number,
+  },
   age: {
     type: Number,
     required: true,

@@ -1,6 +1,7 @@
+import React, { useEffect, useState } from "react";
 import { Text, View, Image, ScrollView } from "react-native";
-import { Button } from "native-base";
-import { router } from "expo-router";
+import { Button, Modal } from "native-base";
+import { router, useNavigation } from "expo-router";
 import CalendarIcon from "@src/assets/splash/CalendarIcon.png";
 import MoneyBagIcon from "@src/assets/splash/MoneyBagIcon.png";
 import ClickIcon from "@src/assets/splash/ClickIcon.png";
@@ -9,10 +10,84 @@ import BriefCaseIcon from "@src/assets/splash/BriefCaseIcon.png";
 import SuccessTickIcon from "@src/assets/splash/SuccessTickIcon.png";
 import HandShakeIcon from "@src/assets/splash/HandShakeIcon.png";
 import BaseCard from "@src/components/utils/card";
+import ErrorAlert from "@src/components/utils/erroralert";
+import * as Location from "expo-location";
+import { Accuracy } from "expo-location";
+import putCurrentLocation from "@src/api/progress/putCurrentLocation";
+import * as SecureStore from "expo-secure-store";
 
 const JobSeekerHomeUI = () => {
+  const [currentLocation, setCurrentLocation] = useState(null);
+  const [showAlert, setShowAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const navigation = useNavigation();
+
+  const getLocationPermission = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      setShowAlert(true);
+      setErrorMessage(
+        "Permission to access location was denied. Please enable permission to access location."
+      );
+      return;
+    }
+
+    const location = await Location.getCurrentPositionAsync({
+      accuracy: Accuracy.Highest,
+    });
+
+    if (location) {
+      setCurrentLocation({
+        long: location.coords.longitude,
+        lat: location.coords.latitude,
+      });
+
+      try {
+        const accountId = await SecureStore.getItemAsync("accountId");
+
+        putCurrentLocation({ accountId, location: currentLocation });
+      } catch (e) {
+        setShowAlert(true);
+        setErrorMessage("Failed to update user location in database.");
+      }
+    }
+  };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      try {
+        getLocationPermission();
+      } catch (e) {
+        setShowAlert(true);
+        setErrorMessage("Error thrown when getting location permission.");
+      }
+    });
+
+    return () => {
+      unsubscribe(); // Cleanup when the component is unmounted
+    };
+  }, []);
+
+  const resetHandler = () => {
+    setShowAlert(false);
+  };
+
   return (
     <ScrollView>
+      {showAlert && (
+        <Modal isOpen={showAlert} onClose={() => resetHandler()}>
+          <Modal.Content className={"bg-transparent"}>
+            <Modal.Body>
+              <ErrorAlert
+                title={"Please enable location service."}
+                message={errorMessage ?? "Location service is unavailable!"}
+                onPress={() => resetHandler()}
+                shown={showAlert}
+              />
+            </Modal.Body>
+          </Modal.Content>
+        </Modal>
+      )}
       <View className={"h-[105vh] mt-2"}>
         <Text className={`font-RobotoBold text-black text-2xl text-left p-5`}>
           Welcome back, Job Seeker!

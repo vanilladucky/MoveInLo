@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, Image, ScrollView } from "react-native";
+import { Text, View, ScrollView } from "react-native";
+import { Modal } from "native-base";
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
+import MapView, { Marker } from "react-native-maps";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import BaseButton from "@src/components/utils/button";
 import BaseInput from "@src/components/utils/inputbox";
-import LandingIcon from "@src/assets/splash/LandingLogo.png";
 import DateFormat from "@src/components/utils/dateformat";
 import TimeFormat from "@src/components/utils/timeformat";
-import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import ErrorAlert from "@src/components/utils/erroralert";
-import { Modal } from "native-base";
 import postCreateService from "@src/api/service/postCreateService";
+import getLocation from "@src/api/maps/getLocation";
+import getCoordinates from "@src/api/maps/getCoordinates";
 import * as SecureStore from "expo-secure-store";
 
 const SchedulerUI = () => {
@@ -34,6 +36,18 @@ const SchedulerUI = () => {
     React.useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [collectionRegion, setCollectionRegion] = useState({
+    latitude: 1.3483,
+    longitude: 103.6831,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
+  });
+  const [deliveryRegion, setDeliveryRegion] = useState({
+    latitude: 1.3483,
+    longitude: 103.6831,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
+  });
   const navigation = useNavigation();
 
   const getAccountId = async () => {
@@ -113,6 +127,73 @@ const SchedulerUI = () => {
     }
   };
 
+  const onRegionChange = (region, field) => {
+    if (field === "delivery") {
+      setDeliveryRegion(region);
+    } else {
+      setCollectionRegion(region);
+    }
+  };
+
+  const searchAddressHandler = async (field) => {
+    const collection = field === "Collection";
+
+    try {
+      const res = await getLocation(
+        collection ? info.collectionAddress : info.deliveryAddress
+      );
+      if (res.success) {
+        const data = res.body;
+
+        if (collection) {
+          setCollectionRegion({
+            ...collectionRegion,
+            longitude: data.lng,
+            latitude: data.lat,
+          });
+        } else {
+          setDeliveryRegion({
+            ...deliveryRegion,
+            longitude: data.lng,
+            latitude: data.lat,
+          });
+        }
+      } else {
+        setShowAlert(true);
+        setErrorMessage(res.body);
+      }
+    } catch (e) {
+      setErrorMessage("Failed to find collection address using GoogleAPI.");
+      setShowAlert(true);
+    }
+  };
+
+  const searchCoordinatesHandler = async (field) => {
+    const collection = field === "Collection";
+
+    try {
+      const res = await getCoordinates(
+        collection ? collectionRegion : deliveryRegion
+      );
+
+      if (res.success) {
+        const data = res.body;
+
+        if (collection) {
+          inputHandler(data, "collectionAddress");
+        } else {
+          inputHandler(data, "deliveryAddress");
+        }
+      } else {
+        setShowAlert(true);
+        setErrorMessage(res.body);
+      }
+    } catch (e) {
+      setErrorMessage("Failed to find collection address using GoogleAPI.");
+      setShowAlert(true);
+    }
+  };
+
   return (
     <ScrollView className={"h-full m-3"}>
       {showAlert && (
@@ -129,7 +210,7 @@ const SchedulerUI = () => {
           </Modal.Content>
         </Modal>
       )}
-      <View className={"h-[120vh]"}>
+      <View className={"h-[150vh]"}>
         <View className={"flex flex-col m-3"}>
           <Text className={"font-RobotoBold text-2xl mt-2"}>
             Schedule{" "}
@@ -186,21 +267,50 @@ const SchedulerUI = () => {
           </View>
 
           <View className={"mt-4"}>
-            <View className={"items-center my-4"}>
-              <Image source={LandingIcon} />
+            <MapView
+              className={"w-full h-52"}
+              region={collectionRegion}
+              onRegionChange={(region) => onRegionChange(region, "collection")}
+            >
+              <Marker
+                coordinate={{
+                  longitude: collectionRegion.longitude,
+                  latitude: collectionRegion.latitude,
+                }}
+              />
+            </MapView>
+
+            <View className={"mt-4"}>
+              <BaseButton
+                primary
+                title={"Search Coordinates"}
+                onPress={() => searchCoordinatesHandler("Collection")}
+                textSize={14}
+                width={150}
+              />
             </View>
 
-            <BaseInput
-              title="Enter Collection Address"
-              placeholder={"e.g. 123 Main st."}
-              onChangeText={(address) =>
-                inputHandler(address, "collectionAddress")
-              }
-            />
+            <View className={"mt-2"}>
+              <BaseInput
+                title="Enter Collection Address"
+                placeholder={"e.g. 123 Main st."}
+                defaultValue={info.collectionAddress}
+                onChangeText={(address) =>
+                  inputHandler(address, "collectionAddress")
+                }
+              />
+              <BaseButton
+                primary
+                title={"Search Address"}
+                onPress={() => searchAddressHandler("Collection")}
+                textSize={14}
+                width={130}
+              />
+            </View>
           </View>
 
           {/* PART 2 */}
-          <View className={"flex flex-col mt-3"}>
+          <View className={"flex flex-col"}>
             <Text className={"font-RobotoMedium text-lg mt-4 underline"}>
               Part 2: Delivery
             </Text>
@@ -247,28 +357,50 @@ const SchedulerUI = () => {
           </View>
 
           <View className={"mt-4"}>
-            <View className={"items-center my-4"}>
-              <Image source={LandingIcon} />
+            <MapView
+              className={"w-full h-52"}
+              initialRegion={deliveryRegion}
+              region={deliveryRegion}
+              onRegionChange={(region) => onRegionChange(region, "delivery")}
+            >
+              <Marker
+                coordinate={{
+                  longitude: deliveryRegion.longitude,
+                  latitude: deliveryRegion.latitude,
+                }}
+              />
+            </MapView>
+
+            <View className={"mt-4"}>
+              <BaseButton
+                primary
+                title={"Search Coordinates"}
+                onPress={() => searchCoordinatesHandler("Delivery")}
+                textSize={14}
+                width={150}
+              />
             </View>
 
-            <BaseInput
-              title="Enter Delivery Address"
-              placeholder={"e.g. 123 Main st."}
-              onChangeText={(address) =>
-                inputHandler(address, "deliveryAddress")
-              }
-            />
+            <View className={"mt-4"}>
+              <BaseInput
+                title="Enter Delivery Address"
+                placeholder={"e.g. 123 Main st."}
+                defaultValue={info.deliveryAddress}
+                onChangeText={(address) =>
+                  inputHandler(address, "deliveryAddress")
+                }
+              />
+              <BaseButton
+                primary
+                title={"Search Address"}
+                onPress={() => searchAddressHandler("Delivery")}
+                textSize={14}
+                width={130}
+              />
+            </View>
           </View>
 
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignContent: "center",
-              margin: 5,
-              marginTop: 15,
-            }}
-          >
+          <View className={"flex flex-row justify-center items-center mt-6"}>
             <BaseButton
               title="Schedule"
               width="70%"

@@ -5,11 +5,16 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      ["expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }]
     ],
     "ios": {
       "config": {
-        "usesNonExemptEncryption": false
+        "usesNonExemptEncryption": false,
+        "googleMapsApiKey": "AIzaSyAvNO-dnwhqWYX0R9yXtKIZfjcqPQowwnc"
       }
     },
     "icon": "./src/assets/splash/LandingLogo.png",

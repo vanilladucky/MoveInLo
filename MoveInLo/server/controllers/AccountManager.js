@@ -1,5 +1,3 @@
-// Convert id from string to ObjectId for the _id.
-// const { ObjectId: accountId } = require("mongodb");
 const Account = require("../models/AccountModel");
 
 const getAccountInfo = async (req, res) => {
@@ -67,6 +65,8 @@ const createAccount = async (req, res) => {
       age,
       number,
       password,
+      long: 0,
+      lat: 0,
     });
 
     console.log("Successfully added new account.");

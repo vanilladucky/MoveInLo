@@ -7,8 +7,8 @@ const getProgress = async (req, res) => {
     const { id } = req.params;
 
     const progressList = await Account.find(
-      { job: { $elemMatch: { _id: id } } },
-      { progress: "$job.progress" }
+      { "job._id": id },
+      { "job.$": true }
     );
 
     if (progressList.length < 1) {
@@ -18,9 +18,37 @@ const getProgress = async (req, res) => {
       });
     }
 
-    const progressInfo = progressList[0];
+    const progressObject = progressList[0];
+    const progressInfo = progressObject.job[0].progress;
+
     console.log("Successfully obtained job progress.");
     return res.status(200).json({ success: true, body: progressInfo });
+  } catch (error) {
+    return res.status(500).json({ success: false, body: error.message });
+  }
+};
+
+const updateLocation = async (req, res) => {
+  try {
+    console.log("Attempting to update current location.");
+
+    const { accountId, location } = req.body;
+
+    const updatedLocation = await Account.updateOne(
+      { _id: accountId },
+      { $set: { long: location.long, lat: location.lat } },
+      { returnDocument: "after" }
+    );
+
+    if (!updatedLocation || !updatedLocation.modifiedCount) {
+      return res.status(400).json({
+        success: false,
+        body: "Failed to update current location.",
+      });
+    }
+
+    console.log("Successfully updated current location.");
+    return res.status(200).json({ success: true, body: updatedLocation });
   } catch (error) {
     return res.status(500).json({ success: false, body: error.message });
   }
@@ -36,8 +64,6 @@ const updateCollection = async (req, res) => {
       { $set: { "job.$.progress": SERVICE_STATUS.PROGRESS } },
       { returnDocument: "after" }
     );
-
-    console.log(updatedInProgress);
 
     if (!updatedInProgress || !updatedInProgress.modifiedCount) {
       return res.status(400).json({
@@ -64,8 +90,6 @@ const updateDelivered = async (req, res) => {
       { returnDocument: "after" }
     );
 
-    console.log(updatedDelivered);
-
     if (!updatedDelivered || !updatedDelivered.modifiedCount) {
       return res.status(400).json({
         success: false,
@@ -91,8 +115,6 @@ const updatePaid = async (req, res) => {
       { returnDocument: "after" }
     );
 
-    console.log(updatedPaid);
-
     if (!updatedPaid || !updatedPaid.modifiedCount) {
       return res.status(400).json({
         success: false,
@@ -109,6 +131,7 @@ const updatePaid = async (req, res) => {
 
 module.exports = {
   getProgress,
+  updateLocation,
   updateCollection,
   updateDelivered,
   updatePaid,

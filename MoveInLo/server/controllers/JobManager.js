@@ -23,12 +23,14 @@ const getRegisteredJobs = async (req, res) => {
         $project: {
           jobId: "$job._id",
           serviceId: "$job.serviceId",
-          jobSeekerId: "$job.jobSeekerId",
+          recipientId: "$_id",
           title: "$job.title",
           subtitle: "$job.subtitle",
         },
       },
     ]);
+
+    console.log(registeredJobListings);
 
     // registeredJobListings =
     if (registeredJobListings.length < 1) {
