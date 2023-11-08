@@ -15,6 +15,7 @@ import loginIcon from "@src/assets/splash/LandingLogo.png";
 import ErrorAlert from "@src/components/utils/erroralert";
 import postLoginAccount from "@src/api/auth/postLoginAccount";
 import * as SecureStore from "expo-secure-store";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const LoginUI = () => {
   const [accountInfo, setAccountInfo] = useState({
@@ -30,6 +31,8 @@ const LoginUI = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const router = useRouter();
+
+  const [isSecureEntry, setisSecureEntry] = useState(true);
 
   const inputHandler = (input, field) => {
     setAccountInfo((prevState) => ({ ...prevState, [field]: input }));
@@ -163,12 +166,37 @@ const LoginUI = () => {
             onChangeText={(email) => inputHandler(email, "username")}
           />
 
-          <BaseInput
-            title={"Password"}
-            defaultValue={accountInfo.password}
-            placeholder={"Enter your password"}
-            onChangeText={(password) => inputHandler(password, "password")}
-          />
+          <View className={"flex flex-row items-center space-y-5 space-x-1 "}>
+            <View className={"w-5/6"}>
+              <BaseInput
+                title={"Password"}
+                secureTextEntry={isSecureEntry}
+                defaultValue={accountInfo.password}
+                placeholder={"Enter your password"}
+                onChangeText={(password) => inputHandler(password, "password")}
+                icon={
+                  <TouchableOpacity
+                    onPress={() => {
+                      setisSecureEntry((prev) => !prev);
+                    }}
+                  ></TouchableOpacity>
+                }
+              />
+            </View>
+
+            <Pressable
+              onPress={() => {
+                setisSecureEntry(!isSecureEntry);
+              }}
+              className={
+                "w-14 h-8 justify-center items-center bg-primary border-primary border-2 rounded-lg"
+              }
+            >
+              <Text className={"font-RobotoBold text-white"}>
+                {isSecureEntry ? "Show" : "Hide"}
+              </Text>
+            </Pressable>
+          </View>
         </View>
 
         <View

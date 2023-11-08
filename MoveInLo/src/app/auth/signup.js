@@ -14,6 +14,7 @@ import ErrorAlert from "@src/components/utils/erroralert";
 import postNewAccount from "@src/api/auth/postNewAccount";
 import { ACCOUNT_TYPE } from "@server/enum/AccountType";
 import * as SecureStore from "expo-secure-store";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const SignUpUI = () => {
   const [newAccountInfo, setNewAccountInfo] = useState({
@@ -37,6 +38,9 @@ const SignUpUI = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const router = useRouter();
+
+  const [isSecureEntry, setisSecureEntry] = useState(true);
+  const [isSecureEntry2, setisSecureEntry2] = useState(true);
 
   const inputHandler = (input, field) => {
     setNewAccountInfo((prevState) => ({ ...prevState, [field]: input }));
@@ -261,12 +265,37 @@ const SignUpUI = () => {
           </View>
         )}
 
-        <BaseInput
-          title={"Password"}
-          placeholder={"Enter your password"}
-          defaultValue={newAccountInfo.password}
-          onChangeText={(password) => inputHandler(password, "password")}
-        />
+        <View className={"flex flex-row items-center space-y-5 space-x-1 "}>
+          <View className={"w-5/6"}>
+            <BaseInput
+              title={"Password"}
+              placeholder={"Enter your password"}
+              secureTextEntry={isSecureEntry}
+              defaultValue={newAccountInfo.password}
+              onChangeText={(password) => inputHandler(password, "password")}
+              icon={
+                <TouchableOpacity
+                  onPress={() => {
+                    setisSecureEntry((prev) => !prev);
+                  }}
+                ></TouchableOpacity>
+              }
+            />
+          </View>
+          <Pressable
+            onPress={() => {
+              setisSecureEntry(!isSecureEntry);
+            }}
+            className={
+              "w-14 h-8 justify-center items-center bg-primary border-primary border-2 rounded-lg"
+            }
+          >
+            <Text className={"font-RobotoBold text-white"}>
+              {isSecureEntry ? "Show" : "Hide"}
+            </Text>
+          </Pressable>
+        </View>
+
         {showAlert && !invalidInput.password && (
           <View className={"mb-2"}>
             <Text className={"text-error font-RobotoRegular text-[13px]"}>
@@ -276,14 +305,39 @@ const SignUpUI = () => {
           </View>
         )}
 
-        <BaseInput
-          title={"Re-enter password"}
-          placeholder={"Re-enter your password"}
-          defaultValue={newAccountInfo.passwordCheck}
-          onChangeText={(passwordCheck) =>
-            inputHandler(passwordCheck, "passwordCheck")
-          }
-        />
+        <View className={"flex flex-row items-center space-y-5 space-x-1 "}>
+          <View className={"w-5/6"}>
+            <BaseInput
+              title={"Re-enter password"}
+              placeholder={"Re-enter your password"}
+              secureTextEntry={isSecureEntry2}
+              defaultValue={newAccountInfo.passwordCheck}
+              onChangeText={(passwordCheck) =>
+                inputHandler(passwordCheck, "passwordCheck")
+              }
+              icon={
+                <TouchableOpacity
+                  onPress={() => {
+                    setisSecureEntry2((prev) => !prev);
+                  }}
+                ></TouchableOpacity>
+              }
+            />
+          </View>
+          <Pressable
+            onPress={() => {
+              setisSecureEntry2(!isSecureEntry2);
+            }}
+            className={
+              "w-14 h-8 justify-center items-center bg-primary border-primary border-2 rounded-lg"
+            }
+          >
+            <Text className={"font-RobotoBold text-white"}>
+              {isSecureEntry2 ? "Show" : "Hide"}
+            </Text>
+          </Pressable>
+        </View>
+
         {showAlert && !invalidInput.passwordCheck && (
           <View className={"mb-2"}>
             <Text className={"text-error font-RobotoRegular text-[13px]"}>
