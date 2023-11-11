@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView, Platform } from "react-native";
 import { Modal } from "native-base";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import MapView, { Marker } from "react-native-maps";
@@ -13,6 +13,10 @@ import postCreateService from "@src/api/service/postCreateService";
 import getLocation from "@src/api/maps/getLocation";
 import getCoordinates from "@src/api/maps/getCoordinates";
 import * as SecureStore from "expo-secure-store";
+import * as XCalendar from "expo-calendar";
+import * as Localization from "expo-localization";
+// const { format, formatInTimeZone, zonedTimeToUtc } = require('date-fns-tz');
+const { parse, addHours } = require("date-fns");
 
 const SchedulerUI = () => {
   const { type } = useLocalSearchParams();
@@ -100,6 +104,39 @@ const SchedulerUI = () => {
     if (await validInput()) {
       try {
         console.log("Calling post to create service");
+
+        // Get all calendar ids on device
+        const { status } = await XCalendar.requestCalendarPermissionsAsync();
+        const { timeZone } = Localization.getCalendars()[0];
+        console.log(timeZone);
+        // const customFormat = 'yyyy-MM-dd\'T\'HH:mm:ssXXX';
+        let androidCalendar, iosCalendar;
+        console.log("Getting calendar ids");
+
+        if (Platform.OS === "ios") {
+          if (status === "granted") {
+            // get default ios calendar
+            iosCalendar = await XCalendar.getDefaultCalendarAsync(
+              XCalendar.EntityTypes.EVENT
+            );
+            console.log(iosCalendar);
+          } else {
+            console.log("Permission denied");
+          }
+        } else {
+          if (status === "granted") {
+            const androidCalendars = await XCalendar.getCalendarsAsync(
+              XCalendar.EntityTypes.EVENT
+            );
+            androidCalendar = androidCalendars.find(
+              (XCalendar) => XCalendar.isPrimary
+            );
+            console.log(androidCalendar);
+          } else {
+            console.log("Permission denied");
+          }
+        }
+
         await postCreateService(info).then((json) => {
           const validResponse = json !== null ? !!json.success : false;
           if (validResponse) {
@@ -110,6 +147,63 @@ const SchedulerUI = () => {
             SecureStore.setItemAsync("serviceId", serviceId);
             SecureStore.setItemAsync("jobId", jobId);
             console.log(`Saving ${serviceId} and ${jobId} to SecureStore`);
+
+            try {
+              // parse collection date and time into datetime object with correct time zone
+              const isoCollect = parse(
+                `${info.collectionDate} ${info.collectionTime}`,
+                "d MMM yyyy h:mm a",
+                new Date(),
+                { timeZone }
+              );
+              console.log(isoCollect);
+
+              // assume 2 hrs needed for collecting
+              const endCollect = addHours(isoCollect, 2);
+
+              // parse deliver date and time into datetime object with correct time zone
+              const isoDeliver = parse(
+                `${info.deliveryDate} ${info.deliveryTime}`,
+                "d MMM yyyy h:mm a",
+                new Date(),
+                { timeZone }
+              );
+              console.log(isoDeliver);
+
+              // assume 2 hrs needed for delivering
+              const endDeliver = addHours(isoDeliver, 2);
+
+              const eventCollection = {
+                title: "MoveInLo",
+                startDate: isoCollect,
+                endDate: endCollect,
+                location: info.collectionAddress,
+                notes: serviceId + "," + jobId,
+              };
+
+              const eventDelivery = {
+                title: "MoveInLo",
+                startDate: isoDeliver,
+                endDate: endDeliver,
+                location: info.deliveryAddress,
+                notes: serviceId + "," + jobId,
+              };
+
+              if (Platform.OS === "ios") {
+                XCalendar.createEventAsync(iosCalendar.id, eventCollection);
+                XCalendar.createEventAsync(iosCalendar.id, eventDelivery);
+              } else {
+                XCalendar.createEventAsync(androidCalendar.id, eventCollection);
+                XCalendar.createEventAsync(androidCalendar.id, eventDelivery);
+              }
+              // for(const calendar of allCalendars){
+              //   console.log(calendar.id);
+              //   XCalendar.createEventAsync(calendar.id, eventCollection);
+              //   XCalendar.createEventAsync(calendar.id, eventDelivery);
+              // }
+            } catch (error) {
+              console.error(error);
+            }
 
             // Reroute to success page
             router.push("/customer/schedule/schedulesuccess");

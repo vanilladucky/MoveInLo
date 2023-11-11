@@ -1,16 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, Image } from "react-native";
-import { router } from "expo-router";
+import { Text, View, Image, Platform } from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
 import { Modal } from "native-base";
 import QuestionIcon from "@src/assets/splash/QuestionIcon.png";
 import BaseButton from "@src/components/utils/button";
 import postWithdrawService from "@src/api/service/postWithdrawService";
 import ErrorAlert from "@src/components/utils/erroralert";
 import * as SecureStore from "expo-secure-store";
+import * as XCalendar from "expo-calendar";
+import * as Localization from "expo-localization";
+import getServiceInfo from "@src/api/service/getServiceInfo";
+import { parse } from "date-fns";
 
 const CancelServiceUI = () => {
+  const { notes } = useLocalSearchParams();
+  console.log(notes);
+  // const { collectionDate,collectionTime,deliveryDate,deliveryTime } = useLocalSearchParams();
+  // console.log(collectionDate, collectionTime, deliveryDate, deliveryTime);
+
   const [showAlert, setShowAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [serviceInfo, setServiceInfo] = useState(null);
   const [trackerInfo, setTrackerInfo] = useState({
     accountId: "",
     serviceId: "",
@@ -20,8 +30,18 @@ const CancelServiceUI = () => {
   const getTrackerInfo = async () => {
     try {
       const accountId = await SecureStore.getItemAsync("accountId");
-      const serviceId = await SecureStore.getItemAsync("serviceId");
-      const jobId = await SecureStore.getItemAsync("jobId");
+      console.log("account: ", accountId);
+
+      const serviceId = notes ? notes.split(",")[0] : null;
+      console.log("serviceId: ", serviceId);
+
+      const jobId = notes ? notes.split(",")[1] : null;
+      console.log("jobId: ", jobId);
+
+      const retrievedService = await getServiceInfo(serviceId);
+      const serviceInfo = retrievedService.body.serviceInfo[0];
+      setServiceInfo(serviceInfo);
+
       setTrackerInfo({ accountId, serviceId, jobId });
     } catch (e) {
       setErrorMessage("Error fetching info to cancel service.");
@@ -30,7 +50,10 @@ const CancelServiceUI = () => {
   };
 
   useEffect(() => {
-    getTrackerInfo();
+    async function prepare() {
+      await getTrackerInfo();
+    }
+    prepare();
   }, []);
 
   const resetHandler = () => {
@@ -39,16 +62,82 @@ const CancelServiceUI = () => {
 
   const withdrawHandler = async () => {
     try {
+      let androidCalendar, iosCalendar;
+
+      const { status } = await XCalendar.requestCalendarPermissionsAsync();
+      console.log(status);
+
+      const { timeZone } = Localization.getCalendars()[0];
+
+      if (Platform.OS === "ios") {
+        if (status === "granted") {
+          // get default ios calendar
+          iosCalendar = await XCalendar.getDefaultCalendarAsync(
+            XCalendar.EntityTypes.EVENT
+          );
+          console.log(iosCalendar.id);
+
+          const isoCollect = parse(
+            `${serviceInfo.collectionDate} ${serviceInfo.collectionTime}`,
+            "dd MMM yyyy h:mm a",
+            new Date(),
+            { timeZone }
+          );
+          console.log("iso", isoCollect);
+
+          const isoDeliver = parse(
+            `${serviceInfo.deliveryDate} ${serviceInfo.deliveryTime}`,
+            "dd MMM yyyy h:mm a",
+            new Date(),
+            { timeZone }
+          );
+          console.log(isoDeliver);
+
+          isoCollect.setDate(isoCollect.getDate() - 1);
+          isoDeliver.setDate(isoDeliver.getDate() + 1);
+
+          const eventsInRange = await XCalendar.getEventsAsync(
+            [iosCalendar.id],
+            isoCollect,
+            isoDeliver
+          );
+
+          const filtered = eventsInRange.filter((event) => {
+            return event.notes === notes;
+          });
+
+          console.log(filtered);
+          for (const events of filtered) {
+            await XCalendar.deleteEventAsync(events.id);
+          }
+          // console.log(iosCalendar);
+        } else {
+          console.log("Permission denied");
+        }
+      } else {
+        if (status === "granted") {
+          const androidCalendars = await XCalendar.getCalendarsAsync(
+            XCalendar.EntityTypes.EVENT
+          );
+          androidCalendar = androidCalendars.find(
+            (XCalendar) => XCalendar.isPrimary
+          );
+          console.log(androidCalendar);
+        } else {
+          console.log("Permission denied");
+        }
+      }
       await postWithdrawService(trackerInfo).then((json) => {
         const validResponse = json !== null ? !!json.success : false;
         if (validResponse) {
-          router.push("customer/tracker/cancelsuccess");
+          router.push("customer/calendar/cancel/success");
         } else {
           setErrorMessage(json.body);
           setShowAlert(true);
         }
       });
     } catch (e) {
+      console.log(e);
       setErrorMessage("Error calling API endpoint to cancel service.");
       setShowAlert(true);
     }

@@ -7,7 +7,8 @@ import { router } from "expo-router";
 const CancellationConfirmationUI = () => {
   const submitHandler = () => {
     // Use replace to reset the route when switching back to scheduled
-    router.replace("/");
+    // TODO: THIS IS BROKEN
+    // router.replace("/");
     router.push("customer/home");
   };
   return (

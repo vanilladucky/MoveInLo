@@ -43,7 +43,9 @@ const RegisteredJobsUI = () => {
         setAppIsReady(true);
       }
     }
-    prepare();
+    if (!appIsReady) {
+      prepare();
+    }
   }, []);
 
   const onLayoutRootView = useCallback(async () => {

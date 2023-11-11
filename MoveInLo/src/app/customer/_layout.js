@@ -31,11 +31,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="tracker"
+        name="calendar"
         options={{
-          title: "Tracker",
+          title: "Calendar",
           tabBarIcon: trackerIcon,
-          href: "/customer/tracker/progress",
+          href: "/customer/calendar/agenda",
         }}
       />
     </Tabs>

@@ -49,7 +49,7 @@ const JobSeekerTrackerUI = () => {
           const jobDetails = serviceData.body.serviceInfo[0];
           setJobInfo(jobDetails);
           setPersonnelInfo(userData.body);
-          setServiceStatus(progressData.body);
+          setServiceStatus(progressData.body.progress);
           await getLocationCoordinates(jobDetails);
         })
         .catch((error) => {
@@ -110,7 +110,9 @@ const JobSeekerTrackerUI = () => {
         setAppIsReady(true);
       }
     }
-    prepare();
+    if (!appIsReady) {
+      prepare();
+    }
   }, []);
 
   const resetHandler = () => {
@@ -161,7 +163,7 @@ const JobSeekerTrackerUI = () => {
       const json = await putUpdatePaid({ jobId });
       const validResponse = json !== null ? !!json.success : false;
       if (validResponse) {
-        router.push("jobseeker/registered/tracker/payment");
+        router.push("jobseeker/registered/calendar/payment");
       } else {
         setErrorMessage("Did not update to paid.");
         setShowAlert(true);

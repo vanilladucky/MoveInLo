@@ -20,9 +20,15 @@ const getProgress = async (req, res) => {
 
     const progressObject = progressList[0];
     const progressInfo = progressObject.job[0].progress;
+    const jobSeekerId = progressObject.job[0].jobSeekerId;
 
     console.log("Successfully obtained job progress.");
-    return res.status(200).json({ success: true, body: progressInfo });
+    return res
+      .status(200)
+      .json({
+        success: true,
+        body: { progress: progressInfo, id: jobSeekerId },
+      });
   } catch (error) {
     return res.status(500).json({ success: false, body: error.message });
   }

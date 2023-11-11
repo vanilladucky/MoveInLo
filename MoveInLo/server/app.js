@@ -5,6 +5,7 @@ const JobSeeker = require("./routes/jobRoutes");
 const ServiceScheduler = require("./routes/schedulerRoutes");
 const ProgressTracker = require("./routes/trackerRoutes");
 const GoogleMapController = require("./routes/googleMapsRoutes");
+const Calendar = require("./routes/calendarRoutes");
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use("/api/", JobSeeker);
 app.use("/api/", ServiceScheduler);
 app.use("/api/", ProgressTracker);
 app.use("/api/", GoogleMapController);
+app.use("/api/", Calendar);
 
 app.get("/", (req, res) => {
   res.send("Server is running");

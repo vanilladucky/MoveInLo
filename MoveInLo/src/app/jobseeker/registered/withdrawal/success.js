@@ -6,7 +6,7 @@ import { Screen } from "react-native-screens";
 
 const router = useRouter();
 
-const JobWithdrawalSuccesUI = () => {
+const JobWithdrawalSuccessUI = () => {
   const backHandler = () => {
     router.replace("/");
     router.push("jobseeker/joblistings/listings");
@@ -46,4 +46,4 @@ const JobWithdrawalSuccesUI = () => {
   );
 };
 
-export default JobWithdrawalSuccesUI;
+export default JobWithdrawalSuccessUI;

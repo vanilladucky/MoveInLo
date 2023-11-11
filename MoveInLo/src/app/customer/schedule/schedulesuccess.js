@@ -7,8 +7,7 @@ import { router } from "expo-router";
 const ScheduleSuccessUI = () => {
   const submitHandler = () => {
     // Use replace to reset the route when switching back to scheduled
-    router.replace("/");
-    router.push("customer/tracker");
+    router.push("customer/calendar");
   };
   return (
     <View

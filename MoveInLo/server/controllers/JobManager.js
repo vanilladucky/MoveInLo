@@ -147,14 +147,14 @@ const withdrawJob = async (req, res) => {
       });
     }
 
-    const jobSeeker = jobSeekerList[0];
-    if (jobSeeker.type !== ACCOUNT_TYPE.JOBSEEKER) {
-      return res.status(400).json({
-        success: false,
-        body: "Invalid account type. User is not a Job Seeker.",
-      });
-    }
-    console.log("Valid Job Seeker.");
+    // const jobSeeker = jobSeekerList[0];
+    // if (jobSeeker.type !== ACCOUNT_TYPE.JOBSEEKER) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     body: "Invalid account type. User is not a Job Seeker.",
+    //   });
+    // }
+    // console.log("Valid Job Seeker.");
 
     const withdrawnJob = await Account.findOneAndUpdate(
       { "job._id": jobId },
