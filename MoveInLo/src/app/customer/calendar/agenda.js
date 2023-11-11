@@ -58,13 +58,16 @@ const CalendarUI = () => {
       const date = new Date(event.startDate);
       const isoDateString = format(date, customFormat, { timeZone });
       const dateString = isoDateString.split(" ")[0];
+      const timeString = isoDateString.split(" ")[1].split("+")[0] + "H";
 
       if (!formattedEvents[dateString]) {
         formattedEvents[dateString] = [];
       }
       formattedEvents[dateString].push({
         name: event.title,
+        time: timeString,
         notes: event.notes,
+        location: event.location,
       });
     });
     return formattedEvents;
@@ -89,6 +92,10 @@ const CalendarUI = () => {
     return (
       <View style={styles.item}>
         <Text>{item.name}</Text>
+        <Text>Time: {item.time}</Text>
+        <Text>Location: {item.location}</Text>
+        <Text>{item.endDate}</Text>
+
         {item.notes !== null && (
           <Button
             style={styles.button}

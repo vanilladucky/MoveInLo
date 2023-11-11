@@ -64,11 +64,14 @@ const CustomerTrackerUI = () => {
         ])
           .then(async ([serviceData, progressData]) => {
             const jobDetails = serviceData.body.serviceInfo[0];
-            const deliveryPersonnel = (await getUserInfo(progressData.body.id))
-              .body;
+            if (progressData.body.id) {
+              const deliveryPersonnel = (
+                await getUserInfo(progressData.body.id)
+              ).body;
+              setPersonnelInfo(deliveryPersonnel);
+            }
             setJobInfo(jobDetails);
             setServiceStatus(progressData.body.progress);
-            setPersonnelInfo(deliveryPersonnel);
             await getLocationCoordinates(jobDetails);
           })
           .catch((error) => {
@@ -149,7 +152,7 @@ const CustomerTrackerUI = () => {
     try {
       // TODO: Delete event from calendar
       router.push({ pathname: "customer/calendar/payment", params: { notes } });
-      //router.push("customer/calendar/payment");
+      // router.push("customer/calendar/payment");
     } catch (e) {
       setErrorMessage("Error when updating payment.");
       setShowAlert(true);
