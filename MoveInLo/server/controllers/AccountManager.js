@@ -7,7 +7,7 @@ const getAccountInfo = async (req, res) => {
 
     const getAccountInfo = await Account.findOne(
       { _id: id },
-      { username: true, type: true, number: true }
+      { username: true, type: true, number: true, long: true, lat: true }
     );
 
     if (!getAccountInfo) {

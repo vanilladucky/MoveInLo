@@ -43,9 +43,16 @@ const JobSeekerHomeUI = () => {
       });
 
       try {
+        console.log("Updating current location.");
         const accountId = await SecureStore.getItemAsync("accountId");
-
-        putCurrentLocation({ accountId, location: currentLocation });
+        await putCurrentLocation({
+          accountId,
+          location: {
+            long: location.coords.longitude,
+            lat: location.coords.latitude,
+          },
+        });
+        console.log("current location: ", currentLocation);
       } catch (e) {
         setShowAlert(true);
         setErrorMessage("Failed to update user location in database.");

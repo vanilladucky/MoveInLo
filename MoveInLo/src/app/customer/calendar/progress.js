@@ -14,6 +14,7 @@ import getJobProgress from "@src/api/progress/getJobProgress";
 import * as SplashScreen from "expo-splash-screen";
 import getLocation from "@src/api/maps/getLocation";
 import * as SecureStore from "expo-secure-store";
+import JobSeekerIcon from "@src/assets/splash/DeliveryIcon.png";
 
 const CustomerTrackerUI = () => {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -38,6 +39,10 @@ const CustomerTrackerUI = () => {
     accountId: null,
     serviceId: null,
     jobId: null,
+  });
+  const [jobSeeker, setJobSeeker] = useState({
+    long: null,
+    lat: null,
   });
   const { notes } = useLocalSearchParams();
 
@@ -69,6 +74,10 @@ const CustomerTrackerUI = () => {
                 await getUserInfo(progressData.body.id)
               ).body;
               setPersonnelInfo(deliveryPersonnel);
+              setJobSeeker({
+                long: deliveryPersonnel.long,
+                lat: deliveryPersonnel.lat,
+              });
             }
             setJobInfo(jobDetails);
             setServiceStatus(progressData.body.progress);
@@ -169,6 +178,7 @@ const CustomerTrackerUI = () => {
     return null;
   }
 
+  console.log(jobSeeker);
   return (
     <ScrollView>
       {showAlert && (
@@ -355,6 +365,15 @@ const CustomerTrackerUI = () => {
                       serviceStatus === SERVICE_STATUS.PENDING
                         ? collectionRegion.latitude
                         : deliveryRegion.latitude,
+                  }}
+                />
+
+                <Marker
+                  image={JobSeekerIcon}
+                  className={"scale-50"}
+                  coordinate={{
+                    longitude: jobSeeker.long ?? 1,
+                    latitude: jobSeeker.lat ?? 1,
                   }}
                 />
               </MapView>
