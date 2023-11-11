@@ -12,12 +12,11 @@ import ErrorAlert from "@src/components/utils/erroralert";
 import postCreateService from "@src/api/service/postCreateService";
 import getLocation from "@src/api/maps/getLocation";
 import getCoordinates from "@src/api/maps/getCoordinates";
-import * as SecureStore from "expo-secure-store";
 import compareDate from "@src/components/utils/compareDate";
 import compareTime from "@src/components/utils/compareTime";
+import * as SecureStore from "expo-secure-store";
 import * as XCalendar from "expo-calendar";
 import * as Localization from "expo-localization";
-// const { format, formatInTimeZone, zonedTimeToUtc } = require('date-fns-tz');
 const { parse, addHours } = require("date-fns");
 
 const SchedulerUI = () => {
@@ -122,7 +121,7 @@ const SchedulerUI = () => {
       return false;
     }
     if (compareDate(currentDate, deliveryDate) === 0) {
-      setErrorMessage("Delivery date has to be later than today's date!");
+      setErrorMessage("Delivery date has to be 1 day later than today's date!");
       return false;
     }
     if (
@@ -132,7 +131,10 @@ const SchedulerUI = () => {
       setErrorMessage("Delivery time has to be later than current time!");
       return false;
     }
-    if (compareDate(collectionDate, deliveryDate) === 0 || compareDate(collectionDate, deliveryDate) === 2) {
+    if (
+      compareDate(collectionDate, deliveryDate) === 0 ||
+      compareDate(collectionDate, deliveryDate) === 2
+    ) {
       setErrorMessage("Delivery date has to be later than collection date!");
       return false;
     }

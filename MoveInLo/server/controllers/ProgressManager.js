@@ -60,6 +60,32 @@ const updateLocation = async (req, res) => {
   }
 };
 
+
+const getLocation = async (req, res) => {
+  try {
+    console.log("Attempting to get jobseeker location.");
+
+    const { jobseekerId } = req.params;
+
+    const getAccountLocation = await Account.findOne(
+      { _id: jobseekerId },
+      {long : true, lat : true}
+    );
+
+    if (!getAccountLocation) {
+      return res.status(400).json({
+        success: false,
+        body: "Failed to get jobseeker current location.",
+      });
+    }
+
+    console.log("Successfully get jobseeker current location.");
+    return res.status(200).json({ success: true, body: getAccountLocation });
+  } catch (error) {
+    return res.status(500).json({ success: false, body: error.message });
+  }
+};
+
 const updateCollection = async (req, res) => {
   try {
     console.log("Attempting to update job to 'In Progress'");
@@ -141,4 +167,5 @@ module.exports = {
   updateCollection,
   updateDelivered,
   updatePaid,
+  getLocation
 };

@@ -7,6 +7,8 @@ const router = express.Router();
 
 router.get("/progress/job/:id", ProgressManager.getProgress);
 
+router.get("/progress/getlocation/:jobseekerId", ProgressManager.getLocation);
+
 router.put("/progress/location", ProgressManager.updateLocation);
 
 router.put("/progress/collection", ProgressManager.updateCollection);
