@@ -13,6 +13,8 @@ import postCreateService from "@src/api/service/postCreateService";
 import getLocation from "@src/api/maps/getLocation";
 import getCoordinates from "@src/api/maps/getCoordinates";
 import * as SecureStore from "expo-secure-store";
+import compareDate from "@src/components/utils/compareDate";
+import compareTime from "@src/components/utils/compareTime";
 import * as XCalendar from "expo-calendar";
 import * as Localization from "expo-localization";
 // const { format, formatInTimeZone, zonedTimeToUtc } = require('date-fns-tz');
@@ -53,6 +55,11 @@ const SchedulerUI = () => {
     longitudeDelta: 0.01,
   });
   const navigation = useNavigation();
+  const [collectionDate, setCollectionDate] = useState(null);
+  const [collectionTime, setCollectionTime] = useState(null);
+  const [deliveryDate, setDeliveryDate] = useState(null);
+  const [deliveryTime, setDeliveryTime] = useState(null);
+  const currentDate = new Date();
 
   const getAccountId = async () => {
     try {
@@ -95,13 +102,46 @@ const SchedulerUI = () => {
   };
 
   const validInput = async () => {
-    return Object.keys(info).reduce((previousValue, currentValue) => {
-      return previousValue && info[currentValue] != null;
-    }, true);
+    return (
+      Object.keys(info).reduce((previousValue, currentValue) => {
+        return previousValue && info[currentValue] != null;
+      }, true) && validDates()
+    );
+  };
+
+  const validDates = () => {
+    if (compareDate(currentDate, collectionDate) === 0) {
+      setErrorMessage("Collection Date has to be later than today's date!");
+      return false;
+    }
+    if (
+      compareDate(currentDate, collectionDate) === 2 &&
+      compareTime(currentDate, collectionTime) === 0
+    ) {
+      setErrorMessage("Collection time should be later than current time!");
+      return false;
+    }
+    if (compareDate(currentDate, deliveryDate) === 0) {
+      setErrorMessage("Delivery date has to be later than today's date!");
+      return false;
+    }
+    if (
+      compareDate(currentDate, deliveryDate) === 2 &&
+      compareTime(currentDate, deliveryTime) === 0
+    ) {
+      setErrorMessage("Delivery time has to be later than current time!");
+      return false;
+    }
+    if (compareDate(collectionDate, deliveryDate) === 0 || compareDate(collectionDate, deliveryDate) === 2) {
+      setErrorMessage("Delivery date has to be later than collection date!");
+      return false;
+    }
+    return true;
   };
 
   const submitHandler = async () => {
-    if (await validInput()) {
+    const valid = await validInput();
+    if (valid) {
       try {
         console.log("Calling post to create service");
 
@@ -213,7 +253,8 @@ const SchedulerUI = () => {
           }
         });
       } catch (e) {
-        setErrorMessage("Error calling API endpoint to create service.");
+        errorMessage == null &&
+          setErrorMessage("Error calling API endpoint to create service.");
         setShowAlert(true);
       }
     } else {
@@ -334,7 +375,10 @@ const SchedulerUI = () => {
               <DateTimePicker
                 isVisible={collectionDateModalVisible}
                 mode={"date"}
-                onConfirm={(date) => dateHandler(date, "collectionDate")}
+                onConfirm={(date) => {
+                  dateHandler(date, "collectionDate");
+                  setCollectionDate(date);
+                }}
                 onCancel={() => setCollectionDateModalVisible(false)}
               />
             </View>
@@ -355,7 +399,10 @@ const SchedulerUI = () => {
             <DateTimePicker
               isVisible={collectionTimeModalVisible}
               mode={"time"}
-              onConfirm={(time) => timeHandler(time, "collectionTime")}
+              onConfirm={(time) => {
+                timeHandler(time, "collectionTime");
+                setCollectionTime(time);
+              }}
               onCancel={() => setCollectionTimeModalVisible(false)}
             />
           </View>
@@ -424,7 +471,10 @@ const SchedulerUI = () => {
               <DateTimePicker
                 isVisible={deliveryDateModalVisible}
                 mode={"date"}
-                onConfirm={(date) => dateHandler(date, "deliveryDate")}
+                onConfirm={(date) => {
+                  dateHandler(date, "deliveryDate");
+                  setDeliveryDate(date);
+                }}
                 onCancel={() => setDeliveryDateModalVisible(false)}
               />
             </View>
@@ -445,7 +495,10 @@ const SchedulerUI = () => {
             <DateTimePicker
               isVisible={deliveryTimeModalVisible}
               mode={"time"}
-              onConfirm={(time) => timeHandler(time, "deliveryTime")}
+              onConfirm={(time) => {
+                timeHandler(time, "deliveryTime");
+                setDeliveryTime(time);
+              }}
               onCancel={() => setDeliveryTimeModalVisible(false)}
             />
           </View>
