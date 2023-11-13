@@ -163,7 +163,7 @@ const JobSeekerTrackerUI = () => {
       const json = await putUpdatePaid({ jobId });
       const validResponse = json !== null ? !!json.success : false;
       if (validResponse) {
-        router.push("jobseeker/registered/calendar/payment");
+        router.push("jobseeker/registered/tracker/payment");
       } else {
         setErrorMessage("Did not update to paid.");
         setShowAlert(true);
