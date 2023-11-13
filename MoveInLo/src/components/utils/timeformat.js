@@ -1,5 +1,5 @@
 export default function TimeFormat(time) {
-  const hours = time.getHours() % 12;
+  const hours = time.getHours() % 12 || 12;
   const hourString = hours < 10 ? "0" + hours.toString() : hours.toString();
   const minutes = time.getMinutes();
   const minuteString =

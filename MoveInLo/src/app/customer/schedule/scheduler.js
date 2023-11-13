@@ -58,6 +58,8 @@ const SchedulerUI = () => {
   const [collectionTime, setCollectionTime] = useState(null);
   const [deliveryDate, setDeliveryDate] = useState(null);
   const [deliveryTime, setDeliveryTime] = useState(null);
+  const [validCollectionAddress, setValidCollectionAddress] = useState(false);
+  const [validDeliveryAddress, setValidDeliveryAddress] = useState(false);
   const currentDate = new Date();
 
   const getAccountId = async () => {
@@ -104,7 +106,10 @@ const SchedulerUI = () => {
     return (
       Object.keys(info).reduce((previousValue, currentValue) => {
         return previousValue && info[currentValue] != null;
-      }, true) && validDates()
+      }, true) &&
+      validDates() &&
+      validDeliveryAddress &&
+      validCollectionAddress
     );
   };
 
@@ -135,13 +140,16 @@ const SchedulerUI = () => {
       compareDate(collectionDate, deliveryDate) === 0 ||
       compareDate(collectionDate, deliveryDate) === 2
     ) {
-      setErrorMessage("Delivery date has to be later than collection date!");
+      setErrorMessage(
+        "Delivery date has to be 1 day later than collection date!"
+      );
       return false;
     }
     return true;
   };
 
   const submitHandler = async () => {
+    setErrorMessage(null);
     const valid = await validInput();
     if (valid) {
       try {
@@ -238,11 +246,6 @@ const SchedulerUI = () => {
                 XCalendar.createEventAsync(androidCalendar.id, eventCollection);
                 XCalendar.createEventAsync(androidCalendar.id, eventDelivery);
               }
-              // for(const calendar of allCalendars){
-              //   console.log(calendar.id);
-              //   XCalendar.createEventAsync(calendar.id, eventCollection);
-              //   XCalendar.createEventAsync(calendar.id, eventDelivery);
-              // }
             } catch (error) {
               console.error(error);
             }
@@ -288,12 +291,14 @@ const SchedulerUI = () => {
             longitude: data.lng,
             latitude: data.lat,
           });
+          setValidCollectionAddress(true);
         } else {
           setDeliveryRegion({
             ...deliveryRegion,
             longitude: data.lng,
             latitude: data.lat,
           });
+          setValidDeliveryAddress(true);
         }
       } else {
         setShowAlert(true);
@@ -318,8 +323,10 @@ const SchedulerUI = () => {
 
         if (collection) {
           inputHandler(data, "collectionAddress");
+          setValidCollectionAddress(true);
         } else {
           inputHandler(data, "deliveryAddress");
+          setValidDeliveryAddress(true);
         }
       } else {
         setShowAlert(true);
@@ -438,9 +445,10 @@ const SchedulerUI = () => {
                 title="Enter Collection Address"
                 placeholder={"e.g. 123 Main st."}
                 defaultValue={info.collectionAddress}
-                onChangeText={(address) =>
-                  inputHandler(address, "collectionAddress")
-                }
+                onChangeText={(address) => {
+                  inputHandler(address, "collectionAddress");
+                  setValidCollectionAddress(false);
+                }}
               />
               <BaseButton
                 primary
@@ -535,9 +543,10 @@ const SchedulerUI = () => {
                 title="Enter Delivery Address"
                 placeholder={"e.g. 123 Main st."}
                 defaultValue={info.deliveryAddress}
-                onChangeText={(address) =>
-                  inputHandler(address, "deliveryAddress")
-                }
+                onChangeText={(address) => {
+                  inputHandler(address, "deliveryAddress");
+                  setValidDeliveryAddress(false);
+                }}
               />
               <BaseButton
                 primary

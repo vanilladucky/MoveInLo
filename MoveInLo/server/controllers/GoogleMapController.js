@@ -30,7 +30,7 @@ const findLocation = async (req, res) => {
 
     return res
       .status(400)
-      .json({ success: false, body: "Invalid API response." });
+      .json({ success: false, body: "No valid google maps address found." });
   } catch (error) {
     return res
       .status(500)
@@ -57,9 +57,10 @@ const reverseGeocoding = async (req, res) => {
       });
     }
 
-    return res
-      .status(400)
-      .json({ success: false, body: "Invalid API response." });
+    return res.status(400).json({
+      success: false,
+      body: "Please change your marker to another location.",
+    });
   } catch (error) {
     return res
       .status(500)
