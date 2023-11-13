@@ -68,7 +68,7 @@ const SignUpUI = () => {
       /[0-9]/.test(newAccountInfo.password) &&
       /[!@#$%^&*()_+]/.test(newAccountInfo.password);
 
-    const validAge = newAccountInfo.age > 16;
+    const validAge = newAccountInfo.age > 16 && newAccountInfo.age < 100;
 
     const validNumber =
       newAccountInfo.number.length === 8 &&

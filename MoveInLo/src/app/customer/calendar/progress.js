@@ -154,7 +154,6 @@ const CustomerTrackerUI = () => {
 
   const cancelHandler = async () => {
     router.push({ pathname: "customer/calendar/cancel", params: { notes } });
-    // router.push({pathname: "customer/calendar/cancel", params: { collectionDate: serviceInfo.collectionDate, collectionTime: serviceInfo.collectionTime, deliveryDate: serviceInfo.deliveryDate, deliveryTime:serviceInfo.deliveryTime }});
   };
 
   const makePayment = async () => {
