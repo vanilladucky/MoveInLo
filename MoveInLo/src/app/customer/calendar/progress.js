@@ -158,8 +158,10 @@ const CustomerTrackerUI = () => {
 
   const makePayment = async () => {
     try {
-      // TODO: Delete event from calendar
-      router.push({ pathname: "customer/calendar/payment", params: { notes } });
+      router.push({
+        pathname: "customer/calendar/payment/payment_QR",
+        params: { notes },
+      });
       // router.push("customer/calendar/payment");
     } catch (e) {
       setErrorMessage("Error when updating payment.");
