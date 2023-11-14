@@ -1,2 +1,3 @@
 .idea
 ./MoveInLo/.env
+*.DS_Store
