@@ -116,7 +116,6 @@ const updatePassword = async (req, res) => {
 
     const { id } = req.params;
     const { newPassword } = req.body;
-    console.log(id);
 
     const updatedAccount = await Account.updateOne(
       { _id: id },
