@@ -8,8 +8,7 @@ const CancellationConfirmationUI = () => {
   const submitHandler = () => {
     // Use replace to reset the route when switching back to scheduled
     // TODO: THIS IS BROKEN
-    // router.replace("/");
-    router.push("customer/home");
+    router.push("customer/calendar/agenda");
   };
   return (
     <View
