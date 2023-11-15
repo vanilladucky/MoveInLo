@@ -2,11 +2,14 @@ import { Text, View, Image } from "react-native";
 import React from "react";
 import BaseButton from "@src/components/utils/button";
 import paymentQR from "@src/assets/splash/QR_payment.png";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 
 const PaymentQRUI = () => {
+  const { notes } = useLocalSearchParams();
+
+  console.log(notes);
   const submitHandler = () => {
-    router.push("customer/calendar/payment");
+    router.push({ pathname: "customer/calendar/payment", params: { notes } });
   };
   return (
     <View

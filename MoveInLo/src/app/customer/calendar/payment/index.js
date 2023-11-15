@@ -1,8 +1,7 @@
-import { Text, View, Image } from "react-native";
+import { Text, View, Image, Platform } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import * as Localization from "expo-localization";
 import getServiceInfo from "@src/api/service/getServiceInfo";
-import * as SecureStore from "expo-secure-store";
 import * as XCalendar from "expo-calendar";
 import React, { useEffect, useState } from "react";
 import SuccessIcon from "@src/assets/splash/SuccessTickIcon.png";
@@ -13,11 +12,10 @@ const PaymentUI = () => {
   const [serviceInfo, setServiceInfo] = useState(null);
   const { notes } = useLocalSearchParams();
 
-
   const withdrawEvents = async () => {
     try {
-
-      const accountId = await SecureStore.getItemAsync("accountId");
+      console.log("Withdraw event");
+      // const accountId = await SecureStore.getItemAsync("accountId");
       const noteData = notes ? notes.split(",") : null;
       const serviceId = noteData[0];
 
@@ -89,7 +87,7 @@ const PaymentUI = () => {
           console.log("Permission denied");
         }
       }
-    } catch (e){
+    } catch (e) {
       console.log(e);
     }
   };
